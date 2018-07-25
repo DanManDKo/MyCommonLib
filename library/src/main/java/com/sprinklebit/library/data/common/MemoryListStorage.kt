@@ -1,5 +1,6 @@
 package com.sprinklebit.library.data.common
 
+import android.app.DownloadManager
 import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
@@ -9,6 +10,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.Action
 import io.reactivex.subjects.PublishSubject
 import java.util.*
 
@@ -50,32 +52,21 @@ private constructor(max: Int,
     }
 
     fun update(key: Any,
-               copyObject: ((Entity) -> Entity)? = null,
-               onUpdateCallback: (Entity) -> Unit)
-            : Maybe<Entity> {
-        return cache.get()
-                .concatMapMaybe { cacheEntity ->
-                    val page = cacheEntity.value.entry
-                    var entity = page.find(key)
-                    if (entity != null) {
-                        if (copyObject != null) {
-                            entity = copyObject.invoke(entity)
-                        }
-                        onUpdateCallback.invoke(entity!!)
-                        page.update(entity)
-                        this.cache.put(cacheEntity.key, CachePolicy.createEntry(page))
-                        updateSubject.onNext(cacheEntity.key)
-                        Maybe.just(entity)
-                    }
-                    Maybe.empty<Entity>()
-                }.lastElement()
-    }
-
-    fun updateCompletable(key: Any,
-                          copyObject: ((Entity) -> Entity)? = null,
-                          onUpdateCallback: (Entity) -> Unit)
+               onUpdateCallback: (Entity) -> Entity)
             : Completable {
-        return update(key, copyObject, onUpdateCallback).ignoreElement()
+        return cache.get()
+                .concatMapCompletable { cacheEntity ->
+                    Completable.fromAction {
+                        val page = cacheEntity.value.entry
+                        var entity = page.find(key)
+                        if (entity != null) {
+                            entity = onUpdateCallback.invoke(entity)
+                            page.update(entity)
+                            cache.put(cacheEntity.key, CachePolicy.createEntry(page))
+                            updateSubject.onNext(cacheEntity.key)
+                        }
+                    }
+                }
     }
 
     private fun fetchIfExpired(query: Query): Observable<PageBundle<Entity>> {
