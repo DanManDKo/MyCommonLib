@@ -15,4 +15,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.sprinklebit.library.presentation.widget.CenterIconButton
+        android:layout_width="match_parent"
+        android:drawableStart="@drawable/ic_launcher_background"
+        android:layout_height="wrap_content" />
+
 </android.support.constraint.ConstraintLayout>

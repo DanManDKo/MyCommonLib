@@ -68,8 +68,7 @@ class CenterIconButton : AppCompatButton {
             tintColor = typedArray.getColor(
                     R.styleable.CenterIconButton_cib_drawableTint,
                     Color.TRANSPARENT)
-            val defaultDrawablePadding = resources.getDimension(
-                    SizeUtil.convertDpToPixel(4.toFloat(), context).toInt())
+            val defaultDrawablePadding = SizeUtil.convertDpToPixel(4.toFloat(), context)
             val drawablePadding = typedArray.getDimension(
                     R.styleable.CenterIconButton_android_drawablePadding,
                     defaultDrawablePadding).toInt()
