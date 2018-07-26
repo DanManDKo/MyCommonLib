@@ -83,7 +83,8 @@ class CenterIconButton : AppCompatButton {
 
     private fun updateTint() {
         if (tintColor != Color.TRANSPARENT) {
-            val drawables = compoundDrawables
+            var drawables = compoundDrawables
+            if (drawables.all { it == null }) drawables = compoundDrawablesRelative
             if (drawables.size != DRAWABLES_LENGTH) return
 
             val wrappedDrawables = arrayOfNulls<Drawable>(DRAWABLES_LENGTH)

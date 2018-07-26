@@ -6,18 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.sprinklebit.library.presentation.widget.CenterIconButton
+        android:id="@+id/centerIconButton"
         android:layout_width="match_parent"
-        android:drawableStart="@drawable/ic_launcher_background"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:cib_drawableTint="@color/green"
+        android:drawableStart="@drawable/ic_launcher_background" />
+
+    <com.sprinklebit.library.presentation.widget.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_attach_file_black_24dp"
+        app:ctv_drawableTint="@color/green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/centerIconButton" />
 
 </android.support.constraint.ConstraintLayout>
