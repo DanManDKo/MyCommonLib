@@ -6,4 +6,8 @@
         <attr name="android:drawablePadding"/>
     </declare-styleable>
 
+    <declare-styleable name="CustomTextView">
+        <attr name="cib_drawableTint" format="color"/>
+    </declare-styleable>
+
 </resources>
