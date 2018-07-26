@@ -7,7 +7,7 @@
     </declare-styleable>
 
     <declare-styleable name="CustomTextView">
-        <attr name="cib_drawableTint" format="color"/>
+        <attr name="ctv_drawableTint" format="color"/>
     </declare-styleable>
 
 </resources>

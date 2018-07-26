@@ -48,11 +48,6 @@ class CustomTextView : AppCompatTextView {
             tintColor = typedArray.getColor(
                     R.styleable.CustomTextView_ctv_drawableTint,
                     Color.TRANSPARENT)
-            val defaultDrawablePadding = SizeUtil.convertDpToPixel(4.toFloat(), context)
-            val drawablePadding = typedArray.getDimension(
-                    R.styleable.CenterIconButton_android_drawablePadding,
-                    defaultDrawablePadding).toInt()
-            compoundDrawablePadding = drawablePadding
 
             updateTint()
             typedArray.recycle()
