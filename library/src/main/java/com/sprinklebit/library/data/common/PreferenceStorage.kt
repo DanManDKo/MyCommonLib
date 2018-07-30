@@ -16,6 +16,8 @@ import java.util.*
 class PreferenceStorage(context: Context, name: String) {
 
     companion object {
+
+        @JvmStatic
         fun clear(context: Context, names: Array<String>) {
             for (name in names) {
                 context.getSharedPreferences(name, Context.MODE_PRIVATE)
