@@ -25,6 +25,11 @@ class Page<T>(private val keyCallback: (T) -> Any,
         return dataList
     }
 
+    fun replace(index: Int, entity: T) {
+        dataList.removeAt(index)
+        dataList.add(index, entity)
+    }
+
     fun addResult(result: List<T>) {
         for (t in result) {
             dataList.add(t)

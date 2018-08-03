@@ -1,16 +1,13 @@
 package com.sprinklebit.library.data.common
 
-import android.app.DownloadManager
 import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import com.sprinklebit.library.data.common.cashe.Page
 import com.sprinklebit.library.domain.model.PageBundle
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.Action
 import io.reactivex.subjects.PublishSubject
 import java.util.*
 
@@ -62,6 +59,30 @@ private constructor(max: Int,
                         if (entity != null) {
                             entity = onUpdateCallback.invoke(entity)
                             page.update(entity)
+                            cache.put(cacheEntity.key, CachePolicy.createEntry(page))
+                            updateSubject.onNext(cacheEntity.key)
+                        }
+                    }
+                }
+    }
+
+    fun update(filter: (Entity) -> Boolean,
+               onUpdateCallback: (Entity) -> Entity)
+            : Completable {
+        return cache.get()
+                .concatMapCompletable { cacheEntity ->
+                    Completable.fromAction {
+                        val page = cacheEntity.value.entry
+                        var changed = false
+                        for (index in 0..page.getDataList().size) {
+                            val entity = page.getDataList()[index]
+                            if (filter.invoke(entity)) {
+                                val newEntity = onUpdateCallback.invoke(entity)
+                                page.replace(index, newEntity)
+                                changed = true
+                            }
+                        }
+                        if (changed) {
                             cache.put(cacheEntity.key, CachePolicy.createEntry(page))
                             updateSubject.onNext(cacheEntity.key)
                         }
