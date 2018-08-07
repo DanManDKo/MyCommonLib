@@ -2,18 +2,26 @@ package com.sprinklebit.library.data.common
 
 import android.content.Context
 import android.content.SharedPreferences
-
+import android.preference.PreferenceManager
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import java.util.*
 
 /**
  * Created with Android Studio.
  * PersonalInfo: Sasha Shcherbinin
  * Date: 12/28/17
  */
-class PreferenceStorage(context: Context, name: String) {
+class PreferenceStorage {
+
+    constructor(context: Context, name: String) {
+        this.preferences = context
+                .getSharedPreferences(name, Context.MODE_PRIVATE)
+    }
+
+    constructor(context: Context) {
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     companion object {
 
@@ -28,10 +36,9 @@ class PreferenceStorage(context: Context, name: String) {
         }
     }
 
-    private val preferenceSubject = PublishSubject.create<String>()
+    private var preferenceSubject: PublishSubject<String> = PublishSubject.create<String>()
 
-    private var preferences: SharedPreferences = context
-            .getSharedPreferences(name, Context.MODE_PRIVATE)
+    private var preferences: SharedPreferences
 
     fun set(trigger: String, save: (SharedPreferences.Editor) -> Unit) {
         val edit = preferences.edit()
