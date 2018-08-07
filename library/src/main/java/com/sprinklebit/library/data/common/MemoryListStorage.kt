@@ -74,7 +74,7 @@ private constructor(max: Int,
                     Completable.fromAction {
                         val page = cacheEntity.value.entry
                         var changed = false
-                        for (index in 0..page.getDataList().size) {
+                        for (index in 0 until page.getDataList().size) {
                             val entity = page.getDataList()[index]
                             if (filter.invoke(entity)) {
                                 val newEntity = onUpdateCallback.invoke(entity)
