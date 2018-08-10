@@ -9,7 +9,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created with Android Studio.
@@ -26,7 +26,7 @@ private constructor(max: Int,
     private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(max)
 
     private val updateSubject = PublishSubject.create<Query>()
-    private val fetchMap = HashMap<Query, Observable<Any>>()
+    private val fetchMap = ConcurrentHashMap<Query, Observable<Any>>()
 
     operator fun get(query: Query): Observable<PageBundle<Entity>> {
         val objectObservable = cache[query]
@@ -34,7 +34,7 @@ private constructor(max: Int,
                 .map<Page<Entity>> { it.entry }
                 .map<PageBundle<Entity>> { PageBundle(it.getDataList(), it.hasNext, it.maxCount) }
                 .toObservable()
-        return objectObservable.repeatWhen { updateSubject.filter { query == it } }
+        return objectObservable.repeatWhen { updateSubject.filter { q -> query == q } }
                 .mergeWith(fetchIfExpired(query))
     }
 
@@ -96,7 +96,14 @@ private constructor(max: Int,
                 .defaultIfEmpty(true)
                 .flatMapCompletable { expired ->
                     if (expired) {
-                        fetchNext(query, true)
+                        Completable.create {
+                            val exception = fetchNext(query, true).blockingGet()
+                            if (exception != null && !it.isDisposed) {
+                                it.onError(exception)
+                            }
+                            it.onComplete()
+                        }
+
                     } else {
                         Completable.complete()
                     }
@@ -128,16 +135,15 @@ private constructor(max: Int,
                                 }
                                 .toObservable()
                     }
-
             observable = observable!!
-                    .publish()
-                    .refCount()
-            val finalObservable = observable
-            observable = observable
-                    .doOnSubscribe { fetchMap[query] = finalObservable }
                     .doOnTerminate { fetchMap.remove(query) }
                     .doOnDispose { fetchMap.remove(query) }
+                    .publish()
+                    .refCount()
         }
+        val finalObservable = observable
+        observable = observable
+                .doOnSubscribe { fetchMap[query] = finalObservable }
         return observable!!.ignoreElements()
     }
 
