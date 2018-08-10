@@ -7,7 +7,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,14 +23,14 @@ constructor(max: Int,
     private val cache: ObservableLruCache<Query, CachedEntry<Entity>> = ObservableLruCache(max)
 
     private val updateSubject = PublishSubject.create<Query>()
-    private val fetchMap = HashMap<Query, Observable<Entity>>()
+    private val fetchMap = ConcurrentHashMap<Query, Observable<Entity>>()
 
     operator fun get(query: Query): Observable<Entity> {
         val objectObservable = cache[query]
                 .filter { cachePolicy.test(it) }
                 .map<Entity> { it.entry }
                 .toObservable()
-        return objectObservable.repeatWhen { updateSubject.filter { query == it } }
+        return objectObservable.repeatWhen { updateSubject.filter { q -> query == q } }
                 .mergeWith(fetchIfExpired(query))
     }
 
@@ -49,7 +49,7 @@ constructor(max: Int,
     }
 
     fun update(query: Query, onUpdateCallback: (Entity) -> Entity): Completable {
-        return cache.get(query)
+        return cache[query]
                 .map<Entity> { it.entry }
                 .doOnSuccess { entity ->
                     val newEntity = onUpdateCallback.invoke(entity)
@@ -63,22 +63,25 @@ constructor(max: Int,
         if (fetcher != null) {
             var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
-                observable = Observable.timer(1, TimeUnit.SECONDS)
-                        .firstOrError()
-                        .flatMap { fetcher.invoke(query) }
+                observable = fetcher.invoke(query)
                         .toObservable()
+                        .doOnNext { entity ->
+                            cache.put(query, CachePolicy.createEntry(entity))
+                            updateSubject.onNext(query)
+                        }
+                        .doOnTerminate { fetchMap.remove(query) }
+                        .doOnDispose { fetchMap.remove(query) }
                         .publish()
                         .refCount()
             }
             val finalObservable = observable
-            return observable.firstOrError()
-                    .doOnSuccess { entity ->
-                        cache.put(query, CachePolicy.createEntry(entity))
-                        updateSubject.onNext(query)
+            return observable
+                    .doOnSubscribe {
+                        if (!fetchMap.contains(query)) {
+                            fetchMap[query] = finalObservable
+                        }
                     }
-                    .doOnSubscribe { fetchMap[query] = finalObservable }
-                    .doOnDispose { fetchMap.remove(query) }
-                    .ignoreElement()
+                    .ignoreElements()
         } else {
             return Completable.complete()
         }
@@ -90,7 +93,13 @@ constructor(max: Int,
                 .toSingle(true)
                 .flatMapCompletable { expired ->
                     if (expired) {
-                        fetch(query)
+                        Completable.create {
+                            val exception = fetch(query).blockingGet()
+                            if (exception != null && !it.isDisposed) {
+                                it.onError(exception)
+                            }
+                            it.onComplete()
+                        }
                     } else {
                         Completable.complete()
                     }

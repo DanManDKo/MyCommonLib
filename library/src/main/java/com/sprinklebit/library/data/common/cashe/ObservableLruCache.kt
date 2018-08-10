@@ -40,15 +40,11 @@ class ObservableLruCache<K, V>(maxSize: Int) {
 
     operator fun get(key: K): Maybe<V> {
         val objectObservable = Maybe.create<V> { emitter ->
-            if (emitter.isDisposed) {
-                emitter.onComplete()
-                return@create
-            }
             val v = cache.get(key)
+            if (v != null && !emitter.isDisposed) {
+                emitter.onSuccess(v)
+            }
             if (!emitter.isDisposed) {
-                if (v != null) {
-                    emitter.onSuccess(v)
-                }
                 emitter.onComplete()
             }
         }
@@ -61,15 +57,17 @@ class ObservableLruCache<K, V>(maxSize: Int) {
             val keySet = HashSet(cache.snapshot().keys)
             for (key in keySet) {
                 if (emitter.isDisposed) {
-                    emitter.onComplete()
-                    return@create
+                    break
                 }
                 val v = cache.get(key)
                 if (v != null) {
                     emitter.onNext(CacheEntity(key, v))
                 }
+
             }
-            emitter.onComplete()
+            if (!emitter.isDisposed) {
+                emitter.onComplete()
+            }
         }
     }
 
