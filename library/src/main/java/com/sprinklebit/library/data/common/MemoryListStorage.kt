@@ -38,34 +38,6 @@ private constructor(max: Int,
                 .mergeWith(fetchIfExpired(query))
     }
 
-    fun update(key: Any, entity: Entity): Completable {
-        return cache.get()
-                .doOnNext { cacheEntity ->
-                    val page = cacheEntity.value.entry
-                    page.update(entity)
-                    cache.put(cacheEntity.key, CachePolicy.createEntry(page))
-                    updateSubject.onNext(cacheEntity.key)
-                }.ignoreElements()
-    }
-
-    fun update(key: Any,
-               onUpdateCallback: (Entity) -> Entity)
-            : Completable {
-        return cache.get()
-                .concatMapCompletable { cacheEntity ->
-                    Completable.fromAction {
-                        val page = cacheEntity.value.entry
-                        var entity = page.find(key)
-                        if (entity != null) {
-                            entity = onUpdateCallback.invoke(entity)
-                            page.update(entity)
-                            cache.put(cacheEntity.key, CachePolicy.createEntry(page))
-                            updateSubject.onNext(cacheEntity.key)
-                        }
-                    }
-                }
-    }
-
     fun update(filter: (Entity) -> Boolean,
                onUpdateCallback: (Entity) -> Entity)
             : Completable {
@@ -121,7 +93,7 @@ private constructor(max: Int,
         var observable: Observable<Any>? = fetchMap[query]
         if (observable == null) {
             observable = cache[query]
-                    .defaultIfEmpty(CachePolicy.createEntry(Page(keyCallback)))
+                    .defaultIfEmpty(CachePolicy.createEntry(Page()))
                     .map<Page<Entity>> { it.entry }
                     .flatMapObservable { page ->
                         fetch(getParams(refresh, page, query))
