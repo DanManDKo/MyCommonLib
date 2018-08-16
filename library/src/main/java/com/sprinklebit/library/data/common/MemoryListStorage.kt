@@ -20,8 +20,7 @@ class MemoryListStorage<Query, Entity>
 private constructor(max: Int,
                     private val limit: Int,
                     private val cachePolicy: CachePolicy,
-                    private val keyCallback: ((Entity) -> Any),
-                    private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)?) {
+                    private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)) {
 
     private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(max)
 
@@ -120,7 +119,7 @@ private constructor(max: Int,
     }
 
     private fun fetch(params: Params<Query, Entity>): Single<FetchResult<Entity>> {
-        return fetcher!!.invoke(params)
+        return fetcher.invoke(params)
     }
 
     class Builder<Query, Entity>(
@@ -155,7 +154,6 @@ private constructor(max: Int,
                     max,
                     limit,
                     cachePolicy!!,
-                    key,
                     fetcher)
         }
     }
