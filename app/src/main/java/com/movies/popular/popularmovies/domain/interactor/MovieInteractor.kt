@@ -2,7 +2,6 @@ package com.movies.popular.popularmovies.domain.interactor
 
 import android.arch.paging.PagedList
 import com.movies.popular.popularmovies.domain.model.Movie
-import com.movies.popular.popularmovies.domain.model.PageBundle
 import com.movies.popular.popularmovies.domain.repository.MovieRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -24,7 +23,7 @@ constructor(private val movieRepository: MovieRepository) {
         return movieRepository.observeLoading();
     }
 
-    fun fetch(): Completable {
-        return movieRepository.fetch()
+    fun refresh(): Completable {
+        return movieRepository.refresh()
     }
 }

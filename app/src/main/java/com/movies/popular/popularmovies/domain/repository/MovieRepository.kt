@@ -12,6 +12,6 @@ import io.reactivex.Observable
  */
 interface MovieRepository {
     fun getMovieList(): Observable<PagedList<Movie>>
-    fun fetch(): Completable
+    fun refresh(): Completable
     fun observeLoading(): Observable<Boolean>
 }

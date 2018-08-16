@@ -20,18 +20,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="@{item == null ? View.VISIBLE : View.GONE}" />
-
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-            android:onClick="@{() -> viewModel.onItemClicked(item)}"
-            android:visibility="@{item != null ? View.VISIBLE : View.GONE}">
+            android:onClick="@{() -> viewModel.onItemClicked(item)}">
 
             <ImageView
                 android:id="@+id/imageView"

@@ -1,14 +1,13 @@
 package com.movies.popular.popularmovies.data.module.movie
 
-import android.arch.paging.DataSource
 import android.arch.paging.PagedList
-import android.arch.paging.RxPagedListBuilder
 import com.movies.popular.popularmovies.domain.model.Movie
 import com.movies.popular.popularmovies.domain.repository.MovieRepository
+import com.sprinklebit.library.data.common.MemoryDataSource
+import com.sprinklebit.library.data.common.cashe.CachePolicy
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,18 +19,29 @@ import javax.inject.Singleton
 @Singleton
 class MovieRepositoryImpl
 @Inject
-constructor(private val movieDataSource: MovieDataSource)
+constructor(private val movieNetworkStorage: MovieNetworkStorage)
     : MovieRepository {
 
+    private val dataSource = MemoryDataSource
+            .Builder<Unit, Movie> { dataSource ->
+                movieNetworkStorage.getMovies(dataSource.page)
+                        .map { MemoryDataSource.FetchResult(it, it.isNotEmpty(), 0) }
+            }
+            .capacity(1)
+            .cachePolicy(CachePolicy.create(5, TimeUnit.MINUTES))
+            .prefetchDistance(5)
+            .limit(20)
+            .build()
+
     override fun getMovieList(): Observable<PagedList<Movie>> {
-        return movieDataSource.getMovies()
+        return dataSource[Unit]
     }
 
     override fun observeLoading(): Observable<Boolean> {
-        return movieDataSource.loadingSubject;
+        return dataSource.observeLoading(Unit)
     }
 
-    override fun fetch(): Completable {
-        return movieDataSource.fetch()
+    override fun refresh(): Completable {
+        return dataSource.refresh(Unit)
     }
 }

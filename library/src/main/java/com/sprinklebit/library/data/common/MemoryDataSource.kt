@@ -13,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
+import timber.log.Timber
 
 /**
  * Created with Android Studio.
@@ -39,27 +40,36 @@ private constructor(private val max: Int,
                 .setPageSize(limit)
                 .build()
 
-        val dataSource: PageKeyedDataSource<Page<Entity>, Entity> = object : PageKeyedDataSource<Page<Entity>, Entity>() {
+        val dataSource: PageKeyedDataSource<Page<Entity>, Entity> = object
+            : PageKeyedDataSource<Page<Entity>, Entity>() {
+
             override fun loadInitial(params: LoadInitialParams<Page<Entity>>,
                                      callback: LoadInitialCallback<Page<Entity>, Entity>) {
+                Timber.d("loadInitial")
                 try {
                     val page = cache[query]
                             .filter { cachePolicy.test(it) }
                             .map<Page<Entity>> { it.entry }
                             .blockingGet(Page(true))
                     if (page.size() == 0) {
-                        val blockingGet = fetcher
-                                .invoke(Params(query, page.size(), limit, page.lastObject))
+                        val newList = fetcher.invoke(
+                                Params(
+                                        query,
+                                        page.size(),
+                                        page.page,
+                                        limit,
+                                        page.lastObject
+                                ))
                                 .blockingGet()
-                        page.addResult(blockingGet.data)
-                        page.hasNext = blockingGet.hasNext
-                        page.maxCount = blockingGet.maxCount
+                        page.addResult(newList.data)
+                        page.hasNext = newList.hasNext
+                        page.maxCount = newList.maxCount
                         cache.put(query, CachePolicy.createEntry(page))
                     }
-                    loadingSubject.onNext(Pair(query, true))
                     callback.onResult(page.getDataList(),
                             null,
                             if (page.hasNext) page else null)
+                    loadingSubject.onNext(Pair(query, page.hasNext))
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
                 }
@@ -67,28 +77,36 @@ private constructor(private val max: Int,
 
             override fun loadAfter(params: LoadParams<Page<Entity>>,
                                    callback: LoadCallback<Page<Entity>, Entity>) {
+                Timber.d("loadAfter")
                 try {
                     val page = cache[query]
                             .filter { cachePolicy.test(it) }
                             .map<Page<Entity>> { it.entry }
                             .blockingGet(Page(true))
 
-                    val blockingGet = fetcher
-                            .invoke(Params(query, page.size(), limit, page.lastObject))
+                    val newList = fetcher.invoke(
+                            Params(
+                                    query,
+                                    page.size(),
+                                    page.page,
+                                    limit,
+                                    page.lastObject
+                            ))
                             .blockingGet()
-                    page.addResult(blockingGet.data)
-                    page.hasNext = blockingGet.hasNext
-                    page.maxCount = blockingGet.maxCount
+                    page.addResult(newList.data)
+                    page.hasNext = newList.hasNext
+                    page.maxCount = newList.maxCount
                     cache.put(query, CachePolicy.createEntry(page))
 
                     if (!page.hasNext) loadingSubject.onNext(Pair(query, false))
-                    callback.onResult(blockingGet.data, if (page.hasNext) page else null)
+                    callback.onResult(newList.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
                 }
             }
 
-            override fun loadBefore(params: LoadParams<Page<Entity>>, callback: LoadCallback<Page<Entity>, Entity>) {
+            override fun loadBefore(params: LoadParams<Page<Entity>>,
+                                    callback: LoadCallback<Page<Entity>, Entity>) {
                 // ignore
             }
         }
@@ -100,6 +118,7 @@ private constructor(private val max: Int,
                         .toObservable())
                 .mergeWith(Observable.just(query))
                 .switchMap {
+                    Timber.d("updateSubject")
                     RxPagedListBuilder(object : DataSource.Factory<Page<Entity>, Entity>() {
                         override fun create(): DataSource<Page<Entity>, Entity> {
                             return dataSource
@@ -114,10 +133,12 @@ private constructor(private val max: Int,
     }
 
     fun refresh(query: Query): Completable {
-        return fetcher.invoke(Params(query, 0, limit, null))
+        return fetcher.invoke(Params(query, limit = limit))
                 .doOnSuccess {
+                    Timber.d("refresh")
                     cache.clear()
                     val page = Page<Entity>(it.hasNext, it.maxCount)
+                    page.addResult(it.data)
                     cache.put(query, CachePolicy.createEntry(page))
                 }
                 .doOnSuccess { updateSubject.onNext(query) }
@@ -192,9 +213,10 @@ private constructor(private val max: Int,
 
     data class Params<Query, Entity> internal constructor(
             var query: Query,
-            var size: Int,
+            var size: Int = 0,
+            var page: Int = 1,
             var limit: Int,
-            var entity: Entity?
+            var entity: Entity? = null
     )
 
     data class FetchResult<E>(

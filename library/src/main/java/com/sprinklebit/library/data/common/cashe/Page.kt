@@ -14,7 +14,7 @@ class Page<T>(var hasNext: Boolean = false,
 
     private var dataList: MutableList<T> = ArrayList()
 
-    private var page: Int = 0
+    var page: Int = 1
 
     val lastObject: T?
         get() = if (dataList.size > 0) dataList[dataList.size - 1] else null

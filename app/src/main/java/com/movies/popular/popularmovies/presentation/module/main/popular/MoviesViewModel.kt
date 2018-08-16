@@ -11,7 +11,6 @@ import com.movies.popular.popularmovies.presentation.common.error.ErrorHandler
 import com.movies.popular.popularmovies.utils.RxDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -72,7 +71,7 @@ constructor(private val movieInteractor: MovieInteractor,
 
     fun onRefresh() {
         RxDisposable.manage(this, "refresh",
-                movieInteractor.fetch()
+                movieInteractor.refresh()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
