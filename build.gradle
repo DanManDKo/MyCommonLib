@@ -20,6 +20,13 @@ allprojects {
     }
 }
 
+ext {
+    platformToolsVersion = '27.1.1'
+    pagingVersion = '1.0.1'
+    lifecycleVersion = '1.1.1'
+}
+
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

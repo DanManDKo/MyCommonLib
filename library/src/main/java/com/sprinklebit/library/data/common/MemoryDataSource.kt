@@ -13,7 +13,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created with Android Studio.
@@ -28,9 +27,7 @@ private constructor(max: Int,
 
     private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(max)
 
-    private val updateSubject = PublishSubject.create<Query>()
-
-    private var refreshSubject = PublishSubject.create<Query>()
+    private var updateSubject = PublishSubject.create<Query>()
     private val loadingSubject = ReplaySubject.create<Pair<Query, Boolean>>(1)
     private val errorSubject = PublishSubject.create<Pair<Query, Throwable>>()
 
@@ -63,7 +60,7 @@ private constructor(max: Int,
                             null,
                             if (page.hasNext) page else null)
                 } catch (e: Throwable) {
-                    refreshSubject.onError(e);
+                    updateSubject.onError(e);
                 }
             }
 
@@ -86,7 +83,7 @@ private constructor(max: Int,
                     if (!page.hasNext) loadingSubject.onNext(Pair(query, false))
                     callback.onResult(blockingGet.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
-                    refreshSubject.onError(e);
+                    updateSubject.onError(e);
                 }
             }
 
@@ -95,7 +92,7 @@ private constructor(max: Int,
             }
         }
 
-        return refreshSubject.filter { it == query }
+        return updateSubject.filter { it == query }
                 .mergeWith(errorSubject.filter { it.first == query }
                         .doOnNext { throw it.second }
                         .ignoreElements()
@@ -122,7 +119,7 @@ private constructor(max: Int,
                     val page = Page<Entity>(it.hasNext, it.maxCount)
                     cache.put(query, CachePolicy.createEntry(page))
                 }
-                .doOnSuccess { refreshSubject.onNext(query) }
+                .doOnSuccess { updateSubject.onNext(query) }
                 .ignoreElement()
     }
 
