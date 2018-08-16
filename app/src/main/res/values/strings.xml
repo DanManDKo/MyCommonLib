@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">SprinkleBitLibrary</string>
+    <string name="app_name">PopularMovies</string>
+    <string name="main_tab_list">Movies</string>
+    <string name="main_tab_favorite">Favorite</string>
 </resources>
