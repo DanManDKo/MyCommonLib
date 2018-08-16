@@ -29,7 +29,6 @@ private constructor(max: Int,
     private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(max)
 
     private val updateSubject = PublishSubject.create<Query>()
-    private val fetchMap = ConcurrentHashMap<Query, Observable<Any>>()
 
     private var refreshSubject = PublishSubject.create<Query>()
     private val loadingSubject = ReplaySubject.create<Pair<Query, Boolean>>(1)
@@ -112,6 +111,10 @@ private constructor(max: Int,
                 }
     }
 
+    fun observeLoading(query: Query): Observable<Boolean> {
+        return loadingSubject.filter {it.first == query}.map { it.second }
+    }
+
     fun refresh(query: Query): Completable {
         return fetcher.invoke(Params(query, 0, limit, null))
                 .doOnSuccess {
@@ -148,7 +151,6 @@ private constructor(max: Int,
     }
 
     class Builder<Query, Entity>(
-            private val key: (Entity) -> Any,
             private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)
     ) {
 
