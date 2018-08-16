@@ -20,8 +20,9 @@ import io.reactivex.subjects.ReplaySubject
  * Date: 2/25/18
  */
 class MemoryDataSource<Query, Entity>
-private constructor(max: Int,
+private constructor(private val max: Int,
                     private val limit: Int,
+                    private val prefetchDistance: Int,
                     private val cachePolicy: CachePolicy,
                     private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)) {
 
@@ -34,7 +35,7 @@ private constructor(max: Int,
     operator fun get(query: Query): Observable<PagedList<Entity>> {
         val pagedListConfig = PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
-                .setPrefetchDistance(5)
+                .setPrefetchDistance(prefetchDistance)
                 .setPageSize(limit)
                 .build()
 
@@ -60,7 +61,7 @@ private constructor(max: Int,
                             null,
                             if (page.hasNext) page else null)
                 } catch (e: Throwable) {
-                    updateSubject.onError(e);
+                    errorSubject.onNext(Pair(query, e));
                 }
             }
 
@@ -83,7 +84,7 @@ private constructor(max: Int,
                     if (!page.hasNext) loadingSubject.onNext(Pair(query, false))
                     callback.onResult(blockingGet.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
-                    updateSubject.onError(e);
+                    errorSubject.onNext(Pair(query, e));
                 }
             }
 
@@ -109,7 +110,7 @@ private constructor(max: Int,
     }
 
     fun observeLoading(query: Query): Observable<Boolean> {
-        return loadingSubject.filter {it.first == query}.map { it.second }
+        return loadingSubject.filter { it.first == query }.map { it.second }
     }
 
     fun refresh(query: Query): Completable {
@@ -154,6 +155,7 @@ private constructor(max: Int,
         private var max = 50
         private var limit = 10
         private var cachePolicy: CachePolicy? = null
+        private var prefetchDistance: Int = 5
 
         fun capacity(max: Int): Builder<Query, Entity> {
             this.max = max
@@ -170,6 +172,11 @@ private constructor(max: Int,
             return this
         }
 
+        fun prefetchDistance(prefetchDistance: Int): Builder<Query, Entity> {
+            this.prefetchDistance = prefetchDistance
+            return this
+        }
+
         fun build(): MemoryDataSource<Query, Entity> {
             if (cachePolicy == null) {
                 cachePolicy = CachePolicy.infinite()
@@ -177,6 +184,7 @@ private constructor(max: Int,
             return MemoryDataSource(
                     max,
                     limit,
+                    prefetchDistance,
                     cachePolicy!!,
                     fetcher)
         }
