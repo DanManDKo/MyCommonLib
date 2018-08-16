@@ -44,7 +44,7 @@ object NumberFormatter {
         return integerFormatter.format(obj)
     }
 
-    fun formatPriceDigitOnly(obj: Any): String{
+    fun formatPriceDigitOnly(obj: Any): String {
         return currencyDigitInstance.format(obj)
     }
 
