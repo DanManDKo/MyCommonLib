@@ -32,12 +32,20 @@ object NumberFormatter {
         DecimalFormat("$#,##0.00")
     }
 
+    private val currencyDigitInstance: NumberFormat by lazy {
+        DecimalFormat("#,##0.00")
+    }
+
     private val currencyWithSignInstance: NumberFormat by lazy {
         DecimalFormat("+$#,##0.00;-$#")
     }
 
     fun formatInteger(obj: Any): String {
         return integerFormatter.format(obj)
+    }
+
+    fun formatPriceDigitOnly(obj: Any): String{
+        return currencyDigitInstance.format(obj)
     }
 
     fun formatPrice(obj: Any): String {
