@@ -14,6 +14,7 @@ object RxDisposable {
 
     private val sSubscriptions = HashMap<Any, SpecificCompositeDisposable>()
 
+    @JvmStatic
     fun manage(tag: Any, subscription: Disposable) {
         var subscriptions: SpecificCompositeDisposable? = sSubscriptions[tag]
         if (subscriptions == null) {
@@ -24,6 +25,7 @@ object RxDisposable {
         subscriptions.add(subscription)
     }
 
+    @JvmStatic
     fun manage(tag: Any, subscriptionTab: Any, subscription: Disposable?) {
         var subscriptions: SpecificCompositeDisposable? = sSubscriptions[tag]
         if (subscriptions == null) {
@@ -34,6 +36,7 @@ object RxDisposable {
         subscriptions.add(subscriptionTab, subscription)
     }
 
+    @JvmStatic
     fun unsubscribe(tag: Any) {
         val subscriptions = sSubscriptions[tag]
         if (subscriptions != null) {
