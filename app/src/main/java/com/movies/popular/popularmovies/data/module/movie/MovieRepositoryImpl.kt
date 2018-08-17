@@ -44,4 +44,10 @@ constructor(private val movieNetworkStorage: MovieNetworkStorage)
     override fun refresh(): Completable {
         return dataSource.refresh(Unit)
     }
+
+    override fun updateMovie(id: Int): Completable {
+        return dataSource.update({ it.id == id }, { movie ->
+            movie.copy(overview = "", title = "")
+        })
+    }
 }

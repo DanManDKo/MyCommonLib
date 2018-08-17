@@ -26,4 +26,8 @@ constructor(private val movieRepository: MovieRepository) {
     fun refresh(): Completable {
         return movieRepository.refresh()
     }
+
+    fun updateMovie(id: Int): Completable {
+        return movieRepository.updateMovie(id)
+    }
 }

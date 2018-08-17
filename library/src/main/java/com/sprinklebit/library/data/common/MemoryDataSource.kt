@@ -14,6 +14,8 @@ import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created with Android Studio.
@@ -66,7 +68,7 @@ private constructor(private val max: Int,
                         page.maxCount = newList.maxCount
                         cache.put(query, CachePolicy.createEntry(page))
                     }
-                    callback.onResult(page.getDataList(),
+                    callback.onResult(ArrayList(page.getDataList()),
                             null,
                             if (page.hasNext) page else null)
                     loadingSubject.onNext(Pair(query, page.hasNext))

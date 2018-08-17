@@ -2,8 +2,6 @@ package com.movies.popular.popularmovies.presentation.common.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;

@@ -1,6 +1,5 @@
 package com.movies.popular.popularmovies.presentation.module.main.popular
 
-import android.arch.paging.PagedList
 import android.arch.paging.PagedListAdapter
 import android.content.Context
 import android.databinding.DataBindingUtil

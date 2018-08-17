@@ -66,7 +66,12 @@ constructor(private val movieInteractor: MovieInteractor,
     }
 
     fun onItemClicked(movie: Movie) {
-        itemClickedEvent.call()
+        RxDisposable.manage(this, "update",
+                movieInteractor.updateMovie(movie.id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ }, ({ errorHandler.handleError(it) })))
+//        itemClickedEvent.call()
     }
 
     fun onRefresh() {
