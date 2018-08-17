@@ -45,6 +45,14 @@ object RxDisposable {
         }
     }
 
+    @JvmStatic
+    fun unsubscribe(tag: Any, subscriptionTab: Any) {
+        val subscriptions = sSubscriptions.get(tag)
+        if (subscriptions != null) {
+            subscriptions.dispose(subscriptionTab)
+        }
+    }
+
     private class SpecificCompositeDisposable {
 
         internal val mCompositeDisposable = CompositeDisposable()
@@ -52,6 +60,13 @@ object RxDisposable {
 
         internal fun dispose() {
             mCompositeDisposable.dispose()
+        }
+
+        internal fun dispose(subscriptionTab: Any) {
+            val oldSubscription = mDisposableHashMap[subscriptionTab]
+            if (oldSubscription != null) {
+                mCompositeDisposable.remove(oldSubscription)
+            }
         }
 
         internal fun add(disposable: Disposable): Boolean {
