@@ -11,7 +11,7 @@ import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import android.widget.TextView
 import com.sprinklebit.library.R
-import com.sprinklebit.library.utils.SizeUtil
+import com.sprinklebit.library.utils.SizeUtils
 import java.util.*
 
 
@@ -68,7 +68,7 @@ class CenterIconButton : AppCompatButton {
             tintColor = typedArray.getColor(
                     R.styleable.CenterIconButton_cib_drawableTint,
                     Color.TRANSPARENT)
-            val defaultDrawablePadding = SizeUtil.convertDpToPixel(4.toFloat(), context)
+            val defaultDrawablePadding = SizeUtils.convertDpToPixel(4.toFloat(), context)
             val drawablePadding = typedArray.getDimension(
                     R.styleable.CenterIconButton_android_drawablePadding,
                     defaultDrawablePadding).toInt()
