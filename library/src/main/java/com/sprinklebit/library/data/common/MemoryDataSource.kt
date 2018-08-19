@@ -69,9 +69,14 @@ private constructor(private val max: Int,
                         page.maxCount = newList.maxCount
                         cache.put(query, CachePolicy.createEntry(page))
                     }
-                    callback.onResult(ArrayList(page.getDataList()), 0, page.maxCount,
-                            null,
-                            if (page.hasNext) page else null)
+                    if (page.maxCount > 0) {
+                        callback.onResult(ArrayList(page.getDataList()), 0, page.maxCount,
+                                null,
+                                if (page.hasNext) page else null)
+                    } else {
+                        callback.onResult(ArrayList(page.getDataList()), null,
+                                if (page.hasNext) page else null)
+                    }
                     loadingSubject.onNext(Pair(query, page.hasNext))
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
