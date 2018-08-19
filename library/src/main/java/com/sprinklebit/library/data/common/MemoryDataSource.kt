@@ -14,8 +14,6 @@ import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created with Android Studio.
@@ -25,7 +23,9 @@ import kotlin.collections.ArrayList
 class MemoryDataSource<Query, Entity>
 private constructor(private val max: Int,
                     private val limit: Int,
+                    private val initialLoadSizeHint: Int,
                     private val prefetchDistance: Int,
+                    private val enablePlaceholders: Boolean,
                     private val cachePolicy: CachePolicy,
                     private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)) {
 
@@ -37,8 +37,9 @@ private constructor(private val max: Int,
 
     operator fun get(query: Query): Observable<PagedList<Entity>> {
         val pagedListConfig = PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
+                .setEnablePlaceholders(enablePlaceholders)
                 .setPrefetchDistance(prefetchDistance)
+                .setInitialLoadSizeHint(initialLoadSizeHint)
                 .setPageSize(limit)
                 .build()
 
@@ -59,7 +60,7 @@ private constructor(private val max: Int,
                                         query,
                                         page.size(),
                                         page.page,
-                                        limit,
+                                        params.requestedLoadSize,
                                         page.lastObject
                                 ))
                                 .blockingGet()
@@ -68,7 +69,7 @@ private constructor(private val max: Int,
                         page.maxCount = newList.maxCount
                         cache.put(query, CachePolicy.createEntry(page))
                     }
-                    callback.onResult(ArrayList(page.getDataList()),
+                    callback.onResult(ArrayList(page.getDataList()), 0, page.maxCount,
                             null,
                             if (page.hasNext) page else null)
                     loadingSubject.onNext(Pair(query, page.hasNext))
@@ -91,7 +92,7 @@ private constructor(private val max: Int,
                                     query,
                                     page.size(),
                                     page.page,
-                                    limit,
+                                    params.requestedLoadSize,
                                     page.lastObject
                             ))
                             .blockingGet()
@@ -176,9 +177,11 @@ private constructor(private val max: Int,
     ) {
 
         private var max = 50
+        private var initialLoadSizeHint: Int? = null
         private var limit = 10
         private var cachePolicy: CachePolicy? = null
         private var prefetchDistance: Int = 5
+        private var enablePlaceholders: Boolean = false
 
         fun capacity(max: Int): Builder<Query, Entity> {
             this.max = max
@@ -200,14 +203,27 @@ private constructor(private val max: Int,
             return this
         }
 
+        fun initialLoadSizeHint(initialLoadSizeHint: Int): Builder<Query, Entity> {
+            this.initialLoadSizeHint = initialLoadSizeHint
+            return this
+        }
+
+        fun enablePlaceholders(enablePlaceholders: Boolean): Builder<Query, Entity> {
+            this.enablePlaceholders = enablePlaceholders
+            return this
+        }
+
         fun build(): MemoryDataSource<Query, Entity> {
             if (cachePolicy == null) {
                 cachePolicy = CachePolicy.infinite()
             }
+
             return MemoryDataSource(
                     max,
                     limit,
+                    initialLoadSizeHint ?: limit,
                     prefetchDistance,
+                    enablePlaceholders,
                     cachePolicy!!,
                     fetcher)
         }

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.movies.popular.popularmovies.R;
 import com.movies.popular.popularmovies.databinding.ItemLoadingBinding;
 
+import timber.log.Timber;
+
 /**
  * Created with Android Studio.
  * User: Sasha Shcherbinin
@@ -42,11 +44,17 @@ public class LoadingAdapter extends RecyclerViewAdapterWrapper {
             }
 
             public void onItemRangeInserted(int positionStart, int itemCount) {
+                Timber.d("onItemRangeInserted " + positionStart + " " + itemCount);
                 notifyItemRangeInserted(positionStart, itemCount);
             }
 
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                notifyItemRangeRemoved(positionStart, itemCount);
+                Timber.d("onItemRangeRemoved " + positionStart + " " + itemCount);
+                if (positionStart == 0 && itemCount >= wrapped.getItemCount()) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyItemRangeRemoved(positionStart, itemCount);
+                }
             }
 
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {

@@ -30,7 +30,7 @@ constructor(private val movieNetworkStorage: MovieNetworkStorage)
             .capacity(1)
             .cachePolicy(CachePolicy.create(5, TimeUnit.MINUTES))
             .prefetchDistance(5)
-            .limit(20)
+            .limit(10)
             .build()
 
     override fun getMovieList(): Observable<PagedList<Movie>> {
