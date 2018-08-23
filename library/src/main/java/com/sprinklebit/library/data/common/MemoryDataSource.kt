@@ -79,11 +79,11 @@ private constructor(private val capacity: Int,
                         callback.onResult(ArrayList(page.getDataList()), null,
                                 if (page.hasNext) page else null)
                     }
-                    loadingSubject.onNext(Pair(query, page.hasNext))
+                    if(!page.hasNext) {
+                        loadingSubject.onNext(Pair(query, false))
+                    }
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
-                } finally {
-                    loadingSubject.onNext(Pair(query, false))
                 }
             }
 
@@ -110,7 +110,9 @@ private constructor(private val capacity: Int,
                     page.maxCount = newList.maxCount
                     cache.put(query, CachePolicy.createEntry(page))
 
-                    if (!page.hasNext) loadingSubject.onNext(Pair(query, false))
+                    if (!page.hasNext) {
+                        loadingSubject.onNext(Pair(query, false))
+                    }
                     callback.onResult(newList.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
