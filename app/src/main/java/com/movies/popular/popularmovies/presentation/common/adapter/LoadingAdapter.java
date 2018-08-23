@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import com.movies.popular.popularmovies.R;
 import com.movies.popular.popularmovies.databinding.ItemLoadingBinding;
 
-import timber.log.Timber;
-
 /**
  * Created with Android Studio.
  * User: Sasha Shcherbinin
@@ -44,12 +42,14 @@ public class LoadingAdapter extends RecyclerViewAdapterWrapper {
             }
 
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                Timber.d("onItemRangeInserted " + positionStart + " " + itemCount);
-                notifyItemRangeInserted(positionStart, itemCount);
+                if (wrapped.getItemCount() == itemCount) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyItemRangeInserted(positionStart, itemCount);
+                }
             }
 
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                Timber.d("onItemRangeRemoved " + positionStart + " " + itemCount);
                 if (positionStart == 0 && itemCount >= wrapped.getItemCount()) {
                     notifyDataSetChanged();
                 } else {
@@ -122,7 +122,7 @@ public class LoadingAdapter extends RecyclerViewAdapterWrapper {
     }
 
     private int getLoadingPosition() {
-        return getItemCount() - 1;
+        return wrapped.getItemCount();
     }
 
     private boolean isLoadingPosition(int position) {
@@ -145,13 +145,7 @@ public class LoadingAdapter extends RecyclerViewAdapterWrapper {
     }
 
     public void updateLoading(boolean loading) {
-        if (this.loading == loading) {
-            try {
-                notifyItemChanged(getLoadingPosition());
-            } catch (Throwable e) {
-                // ignore
-            }
-        } else {
+        if (this.loading != loading) {
             this.loading = loading;
             try {
                 if (loading) {

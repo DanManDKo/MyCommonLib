@@ -21,7 +21,7 @@ import timber.log.Timber
  * Date: 2/25/18
  */
 class MemoryDataSource<Query, Entity>
-private constructor(private val max: Int,
+private constructor(private val capacity: Int,
                     private val limit: Int,
                     private val initialLoadSizeHint: Int,
                     private val prefetchDistance: Int,
@@ -29,11 +29,13 @@ private constructor(private val max: Int,
                     private val cachePolicy: CachePolicy,
                     private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)) {
 
-    private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(max)
+    private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(capacity)
 
     private var updateSubject = PublishSubject.create<Query>()
-    private val loadingSubject = ReplaySubject.create<Pair<Query, Boolean>>(1)
-    private val errorSubject = PublishSubject.create<Pair<Query, Throwable>>()
+    private val loadingSubject = ReplaySubject
+            .create<Pair<Query, Boolean>>(capacity)
+    private val errorSubject = PublishSubject
+            .create<Pair<Query, Throwable>>()
 
     operator fun get(query: Query): Observable<PagedList<Entity>> {
         val pagedListConfig = PagedList.Config.Builder()
@@ -48,7 +50,7 @@ private constructor(private val max: Int,
 
             override fun loadInitial(params: LoadInitialParams<Page<Entity>>,
                                      callback: LoadInitialCallback<Page<Entity>, Entity>) {
-                Timber.d("loadInitial")
+                loadingSubject.onNext(Pair(query, true))
                 try {
                     val page = cache[query]
                             .filter { cachePolicy.test(it) }
@@ -80,6 +82,8 @@ private constructor(private val max: Int,
                     loadingSubject.onNext(Pair(query, page.hasNext))
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
+                } finally {
+                    loadingSubject.onNext(Pair(query, false))
                 }
             }
 
@@ -181,15 +185,15 @@ private constructor(private val max: Int,
             private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)
     ) {
 
-        private var max = 50
+        private var capacity = 50
         private var initialLoadSizeHint: Int? = null
         private var limit = 10
         private var cachePolicy: CachePolicy? = null
         private var prefetchDistance: Int = 5
         private var enablePlaceholders: Boolean = false
 
-        fun capacity(max: Int): Builder<Query, Entity> {
-            this.max = max
+        fun capacity(capacity: Int): Builder<Query, Entity> {
+            this.capacity = capacity
             return this
         }
 
@@ -224,7 +228,7 @@ private constructor(private val max: Int,
             }
 
             return MemoryDataSource(
-                    max,
+                    capacity,
                     limit,
                     initialLoadSizeHint ?: limit,
                     prefetchDistance,
