@@ -1,6 +1,5 @@
 package com.movies.popular.popularmovies.presentation.module.main.popular
 
-import android.arch.paging.PagedListAdapter
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.support.v7.util.DiffUtil
@@ -10,6 +9,7 @@ import android.view.ViewGroup
 import com.movies.popular.popularmovies.R
 import com.movies.popular.popularmovies.databinding.ItemMovieBinding
 import com.movies.popular.popularmovies.domain.model.Movie
+import com.sprinklebit.library.presentation.common.FixedPagedListAdapter
 
 
 /**
@@ -19,7 +19,7 @@ import com.movies.popular.popularmovies.domain.model.Movie
  * Time: 7:17 PM
  */
 class MoviesAdapter(context: Context, private val viewModel: MoviesViewModel)
-    : PagedListAdapter<Movie, MoviesAdapter.ItemViewHolder>(DIFF_CALLBACK) {
+    : FixedPagedListAdapter<Movie, MoviesAdapter.ItemViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(DataBindingUtil

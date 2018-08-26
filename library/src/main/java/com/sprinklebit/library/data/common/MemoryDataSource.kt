@@ -8,12 +8,12 @@ import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import com.sprinklebit.library.data.common.cashe.Page
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
-import timber.log.Timber
 
 /**
  * Created with Android Studio.
@@ -79,7 +79,7 @@ private constructor(private val capacity: Int,
                         callback.onResult(ArrayList(page.getDataList()), null,
                                 if (page.hasNext) page else null)
                     }
-                    if(!page.hasNext) {
+                    if (!page.hasNext) {
                         loadingSubject.onNext(Pair(query, false))
                     }
                 } catch (e: Throwable) {
@@ -89,7 +89,6 @@ private constructor(private val capacity: Int,
 
             override fun loadAfter(params: LoadParams<Page<Entity>>,
                                    callback: LoadCallback<Page<Entity>, Entity>) {
-                Timber.d("loadAfter")
                 try {
                     val page = cache[query]
                             .filter { cachePolicy.test(it) }
@@ -132,7 +131,6 @@ private constructor(private val capacity: Int,
                         .toObservable())
                 .mergeWith(Observable.just(query))
                 .switchMap {
-                    Timber.d("updateSubject")
                     RxPagedListBuilder(object : DataSource.Factory<Page<Entity>, Entity>() {
                         override fun create(): DataSource<Page<Entity>, Entity> {
                             return dataSource
@@ -147,9 +145,8 @@ private constructor(private val capacity: Int,
     }
 
     fun refresh(query: Query): Completable {
-        return fetcher.invoke(Params(query, limit = limit))
+        return fetcher.invoke(Params(query, limit = initialLoadSizeHint))
                 .doOnSuccess {
-                    Timber.d("refresh")
                     cache.clear()
                     val page = Page<Entity>(it.hasNext, it.maxCount)
                     page.addResult(it.data)

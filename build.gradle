@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.60'
+    ext.kotlin_version = '1.2.61'
     repositories {
         google()
         jcenter()
@@ -21,6 +21,10 @@ allprojects {
 }
 
 ext {
+    retrofitVersion = '2.3.0'
+    okhttp3Version = '3.9.1'
+    glideVersion = '4.7.1'
+    dagger_version = "2.16"
     platformToolsVersion = '27.1.1'
     pagingVersion = '1.0.1'
     lifecycleVersion = '1.1.1'
