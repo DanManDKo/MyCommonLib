@@ -4,7 +4,6 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import timber.log.Timber
-import java.util.*
 
 /**
  * Created with Android Studio.
@@ -18,7 +17,8 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
     private val data = ArrayList<Type>()
 
     fun updateData(newData: List<Type>) {
-        if (data.size > 0 && newData.size > 1) {
+        val copyData = ArrayList(newData)
+        if (data.size > 0 && copyData.size > 1) {
             var clipTop = true
             if (recyclerView.layoutManager is LinearLayoutManager) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -32,17 +32,17 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
                 }
 
                 override fun getNewListSize(): Int {
-                    return newData.size
+                    return copyData.size
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                     return isItemTheSame.invoke(
                             data[oldItemPosition],
-                            newData[newItemPosition])
+                            copyData[newItemPosition])
                 }
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    val equals = data[oldItemPosition] == newData[newItemPosition]
+                    val equals = data[oldItemPosition] == copyData[newItemPosition]
                     if (!equals) {
                         Timber.d("are not contents the same")
                     }
@@ -51,7 +51,7 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
             }, false)
 
             data.clear()
-            data.addAll(newData)
+            data.addAll(copyData)
             diffResult.dispatchUpdatesTo(adapter)
 
             if (clipTop && offset == 0) {
@@ -59,7 +59,7 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
             }
         } else {
             data.clear()
-            data.addAll(newData)
+            data.addAll(copyData)
             adapter.notifyDataSetChanged()
         }
     }
