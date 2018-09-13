@@ -24,7 +24,7 @@ constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapt
         super.submitList(pagedList)
         if (currentList != null &&
                 pagedList != null &&
-                currentList!!.size >= pagedList.size - 1 &&
+                currentList!!.size >= pagedList.size &&
                 pagedList.isNotEmpty() &&
                 diffCallback.areItemsTheSame(currentList!![pagedList.size - 1], pagedList[pagedList.size - 1])) {
             recyclerView.postDelayed({
