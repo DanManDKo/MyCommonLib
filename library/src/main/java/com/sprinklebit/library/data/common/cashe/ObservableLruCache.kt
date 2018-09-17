@@ -1,6 +1,7 @@
 package com.sprinklebit.library.data.common.cashe
 
 import android.util.LruCache
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import java.lang.ref.WeakReference

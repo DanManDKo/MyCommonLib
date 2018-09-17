@@ -8,7 +8,6 @@ import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import com.sprinklebit.library.data.common.cashe.Page
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -175,6 +174,28 @@ private constructor(private val capacity: Int,
                         if (changed) {
                             cache.put(cacheEntity.key, CachePolicy.createEntry(page))
                             updateSubject.onNext(cacheEntity.key)
+                        }
+                    }
+                }
+    }
+
+    fun remove(query: Query, filter: (Entity) -> Boolean)
+            : Completable {
+        return cache[query]
+                .flatMapCompletable { cacheEntity ->
+                    Completable.fromAction {
+                        val page = cacheEntity.entry
+                        var changed = false
+                        for (index in page.getDataList().size - 1 downTo 0) {
+                            val entity = page.getDataList()[index]
+                            if (filter.invoke(entity)) {
+                                page.remove(index)
+                                changed = true
+                            }
+                        }
+                        if (changed) {
+                            cache.put(query, CachePolicy.createEntry(page))
+                            updateSubject.onNext(query)
                         }
                     }
                 }

@@ -46,4 +46,8 @@ class Page<T>(var hasNext: Boolean = false,
     fun size(): Int {
         return dataList.size
     }
+
+    fun remove(index: Int) {
+        dataList.removeAt(index)
+    }
 }
