@@ -1,5 +1,6 @@
 package com.sprinklebit.library.presentation.common
 
+import android.annotation.SuppressLint
 import android.arch.paging.PagedList
 import android.arch.paging.PagedListAdapter
 import android.support.v7.util.DiffUtil
@@ -13,6 +14,8 @@ import android.support.v7.widget.RecyclerView
 abstract class FixedPagedListAdapter<T, VH : RecyclerView.ViewHolder>
 constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapter<T, VH>(diffCallback) {
 
+    private var lastPos = 0
+
     private lateinit var recyclerView: RecyclerView
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -20,16 +23,13 @@ constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapt
         super.onAttachedToRecyclerView(recyclerView)
     }
 
-    override fun submitList(pagedList: PagedList<T>?) {
-        super.submitList(pagedList)
-        if (currentList != null &&
-                pagedList != null &&
-                currentList!!.size >= pagedList.size &&
-                pagedList.isNotEmpty() &&
-                diffCallback.areItemsTheSame(currentList!![pagedList.size - 1], pagedList[pagedList.size - 1])) {
-            recyclerView.postDelayed({
-                notifyItemChanged(pagedList.size - 1)
-            }, 1000)
-        }
+    override fun onBindViewHolder(holder: VH, @SuppressLint("RecyclerView") position: Int) {
+        lastPos = position
     }
+
+    override fun onCurrentListChanged(currentList: PagedList<T>?) {
+        super.onCurrentListChanged(currentList)
+        getItem(Math.min(lastPos, itemCount - 1))
+    }
+
 }
