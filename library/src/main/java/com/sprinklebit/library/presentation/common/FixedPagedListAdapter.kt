@@ -3,6 +3,7 @@ package com.sprinklebit.library.presentation.common
 import android.annotation.SuppressLint
 import android.arch.paging.PagedList
 import android.arch.paging.PagedListAdapter
+import android.support.annotation.CallSuper
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 
@@ -12,7 +13,7 @@ import android.support.v7.widget.RecyclerView
  * Date : 8/27/18
  */
 abstract class FixedPagedListAdapter<T, VH : RecyclerView.ViewHolder>
-constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapter<T, VH>(diffCallback) {
+constructor(diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapter<T, VH>(diffCallback) {
 
     private var lastPos = 0
 
@@ -23,6 +24,7 @@ constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapt
         super.onAttachedToRecyclerView(recyclerView)
     }
 
+    @CallSuper
     override fun onBindViewHolder(holder: VH, @SuppressLint("RecyclerView") position: Int) {
         lastPos = position
     }
