@@ -25,11 +25,11 @@ constructor(private val discoverService: DiscoverService,
                     val arrayList = ArrayList<Movie>()
                     if (page == 1) {
                         val random = Random()
-                        for (i in 1..7) {
+                        for (i in 1..5) {
                             arrayList.add(Movie(i, "2222", "dfasdf", null))
                         }
                     } else if (page == 2) {
-                        for (i in 14..20) {
+                        for (i in 30..40) {
                             arrayList.add(Movie(i, "2222", "dfasdf", null))
                         }
                     }

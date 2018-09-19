@@ -28,6 +28,7 @@ class MoviesAdapter(context: Context, private val viewModel: MoviesViewModel)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+//        super.onBindViewHolder(holder, position)
         holder.bind(getItem(position))
     }
 
