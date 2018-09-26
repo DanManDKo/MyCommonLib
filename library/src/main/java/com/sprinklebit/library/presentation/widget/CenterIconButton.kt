@@ -40,13 +40,6 @@ class CenterIconButton : AppCompatButton {
             return textBoundsRect!!.width()
         }
 
-    private val isAllCaps: Boolean
-        get() {
-            val method = transformationMethod ?: return false
-
-            return method.javaClass.simpleName == "AllCapsTransformationMethod"
-        }
-
     constructor(context: Context) : super(context) {
         init(context, null)
     }
@@ -79,6 +72,11 @@ class CenterIconButton : AppCompatButton {
         }
         mLeftPadding = paddingLeft
         mRightPadding = paddingRight
+    }
+
+    override fun isAllCaps(): Boolean {
+        val method = transformationMethod ?: return false
+        return method.javaClass.simpleName == "AllCapsTransformationMethod"
     }
 
     private fun updateTint() {
