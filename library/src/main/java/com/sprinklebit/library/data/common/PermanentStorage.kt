@@ -37,10 +37,8 @@ private constructor(max: Int,
         if (observable == null) {
             observable = fetcher.invoke(query)
                     .toObservable()
-                    .doOnNext { entity ->
-                        cacheInfo.put(query, CachePolicy.createEntry())
-                        permanent.write(query, entity)
-                    }
+                    .doOnNext { cacheInfo.put(query, CachePolicy.createEntry()) }
+                    .flatMap { permanent.write(query, it).toObservable<Entity>() }
                     .doOnTerminate { fetchMap.remove(query) }
                     .doOnDispose { fetchMap.remove(query) }
                     .publish()
