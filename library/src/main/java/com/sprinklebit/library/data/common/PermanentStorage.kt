@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created with Android Studio.
  * User: Sasha Shcherbinin
- * Date: 2/25/18
+ * Date: 9/25/18
  */
 class PermanentStorage<Query, Entity>
 private constructor(max: Int,
@@ -37,17 +37,23 @@ private constructor(max: Int,
         if (observable == null) {
             observable = fetcher.invoke(query)
                     .toObservable()
+                    .doOnNext { entity ->
+                        cacheInfo.put(query, CachePolicy.createEntry())
+                        permanent.write(query, entity)
+                    }
+                    .doOnTerminate { fetchMap.remove(query) }
+                    .doOnDispose { fetchMap.remove(query) }
                     .publish()
                     .refCount()
         }
         val finalObservable = observable
-        return observable.firstOrError()
-                .flatMapCompletable { entity ->
-                    cacheInfo.put(query, CachePolicy.createEntry())
-                    permanent.write(query, entity)
+        return observable
+                .doOnSubscribe {
+                    if (!fetchMap.contains(query)) {
+                        fetchMap[query] = finalObservable
+                    }
                 }
-                .doOnSubscribe { fetchMap[query] = finalObservable }
-                .doOnDispose { fetchMap.remove(query) }
+                .ignoreElements()
     }
 
     private fun fetchIfExpired(query: Query): Observable<Entity> {
@@ -55,16 +61,8 @@ private constructor(max: Int,
                 .map { cachedEntry -> !cachePolicy.test(cachedEntry) }
                 .toSingle(true)
                 .flatMapCompletable { expired ->
-                    if (expired) {
-                        cacheInfo[query]
-                                .map { !cachePolicy.test(it) }.toSingle(true)
-                                .flatMapCompletable { fetch(query) }
-                    } else {
-                        cacheInfo[query]
-                                .map { !cachePolicy.test(it) }
-                                .toSingle(true)
-                                .flatMapCompletable { Completable.complete() }
-                    }
+                    if (expired) fetch(query)
+                    else Completable.complete()
                 }.toObservable()
     }
 
