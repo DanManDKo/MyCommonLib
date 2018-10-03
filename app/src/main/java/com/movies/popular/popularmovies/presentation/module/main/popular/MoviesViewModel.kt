@@ -39,7 +39,6 @@ constructor(private val movieInteractor: MovieInteractor,
     private fun observeMovies() {
         RxDisposable.manage(this, "positions",
                 movieInteractor.getMovieList()
-                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe { contentState.setValue(ContentState.STATE_LOADING) }
                         .doOnError { contentState.setValue(ContentState.STATE_ERROR) }
@@ -68,7 +67,6 @@ constructor(private val movieInteractor: MovieInteractor,
     fun onItemClicked(movie: Movie) {
         RxDisposable.manage(this, "update",
                 movieInteractor.updateMovie(movie.id)
-                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ }, ({ errorHandler.handleError(it) })))
 //        itemClickedEvent.call()
@@ -77,7 +75,6 @@ constructor(private val movieInteractor: MovieInteractor,
     fun onRefresh() {
         RxDisposable.manage(this, "refresh",
                 movieInteractor.refresh()
-                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             refreshEvent.value = false

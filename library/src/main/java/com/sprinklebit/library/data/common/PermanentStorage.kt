@@ -6,6 +6,7 @@ import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -36,6 +37,7 @@ private constructor(max: Int,
         var observable: Observable<Entity>? = fetchMap[query]
         if (observable == null) {
             observable = fetcher.invoke(query)
+                    .subscribeOn(Schedulers.io())
                     .toObservable()
                     .doOnNext { cacheInfo.put(query, CachePolicy.createEntry()) }
                     .flatMap { permanent.write(query, it).toObservable<Entity>() }

@@ -5,7 +5,9 @@ import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
@@ -64,6 +66,7 @@ constructor(max: Int,
             var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
                 observable = fetcher.invoke(query)
+                        .subscribeOn(Schedulers.io())
                         .toObservable()
                         .doOnNext { entity ->
                             cache.put(query, CachePolicy.createEntry(entity))

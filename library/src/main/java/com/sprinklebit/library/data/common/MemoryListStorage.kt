@@ -8,6 +8,7 @@ import com.sprinklebit.library.domain.model.PageBundle
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
 
@@ -107,6 +108,7 @@ private constructor(max: Int,
                                 .toObservable()
                     }
             observable = observable!!
+                    .subscribeOn(Schedulers.io())
                     .doOnTerminate { fetchMap.remove(query) }
                     .doOnDispose { fetchMap.remove(query) }
                     .publish()
