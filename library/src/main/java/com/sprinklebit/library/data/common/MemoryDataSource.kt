@@ -84,6 +84,7 @@ private constructor(private val capacity: Int,
                     }
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
+                    loadingSubject.onNext(Pair(query, false))
                 }
             }
 
@@ -115,6 +116,7 @@ private constructor(private val capacity: Int,
                     callback.onResult(newList.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
                     errorSubject.onNext(Pair(query, e));
+                    loadingSubject.onNext(Pair(query, false))
                 }
             }
 
