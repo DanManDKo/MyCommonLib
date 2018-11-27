@@ -48,7 +48,7 @@ class PreferenceStorage {
             edit.apply()
         } catch (e: Exception) {
             Timber.e(e)
-            clear()
+            preferences.edit().clear().apply()
             save.invoke(edit)
             edit.apply()
         }
@@ -67,7 +67,7 @@ class PreferenceStorage {
                 edit.apply()
             } catch (e: Exception) {
                 Timber.e(e)
-                clear()
+                preferences.edit().clear().apply()
                 save.invoke(edit)
                 edit.apply()
             }
