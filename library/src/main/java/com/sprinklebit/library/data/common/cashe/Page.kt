@@ -13,7 +13,7 @@ import java.util.*
 class Page<T>(var hasNext: Boolean = false,
               var maxCount: Int = 0) {
 
-    private var dataList: MutableList<T> = ArrayList()
+    private var dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
 
     var page: Int = 1
 
@@ -25,8 +25,10 @@ class Page<T>(var hasNext: Boolean = false,
     }
 
     fun replace(index: Int, entity: T) {
-        dataList.removeAt(index)
-        dataList.add(index, entity)
+        synchronized(dataList) {
+            dataList.removeAt(index)
+            dataList.add(index, entity)
+        }
     }
 
     fun addResult(result: List<T>) {
