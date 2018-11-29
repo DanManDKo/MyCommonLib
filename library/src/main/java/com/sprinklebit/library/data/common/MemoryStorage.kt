@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit
  * User: Sasha Shcherbinin
  * Date: 2/25/18
  */
-class MemoryStorage<Query, Entity> private
-constructor(max: Int,
+open class MemoryStorage<Query, Entity>
+(max: Int,
             private val cachePolicy: CachePolicy,
             private val fetcher: ((Query) -> Single<Entity>)?) {
 
-    private val cache: ObservableLruCache<Query, CachedEntry<Entity>> = ObservableLruCache(max)
+    protected val cache: ObservableLruCache<Query, CachedEntry<Entity>> = ObservableLruCache(max)
 
-    private val updateSubject = PublishSubject.create<Query>()
+    protected val updateSubject = PublishSubject.create<Query>()
     private val fetchMap = ConcurrentHashMap<Query, Observable<Entity>>()
 
     operator fun get(query: Query): Observable<Entity> {
@@ -109,7 +109,7 @@ constructor(max: Int,
                 }.toObservable()
     }
 
-    class Builder<Query, Entity> {
+    open class Builder<Query, Entity> {
 
         private var max: Int = 0
         private var fetcher: ((Query) -> Single<Entity>)? = null

@@ -9,6 +9,7 @@ import java.util.*
  * Time: 4:39 PM
  */
 
+@Deprecated("We do not use this object anymore")
 class Page<T>(var hasNext: Boolean = false,
               var maxCount: Int = 0) {
 

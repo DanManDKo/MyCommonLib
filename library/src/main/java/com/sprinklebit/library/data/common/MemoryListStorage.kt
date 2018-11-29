@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
  * User: Sasha Shcherbinin
  * Date: 2/25/18
  */
+@Deprecated("Use MemoryDataSource or MemoryListStorageNew objects")
 class MemoryListStorage<Query, Entity>
 private constructor(max: Int,
                     private val limit: Int,
