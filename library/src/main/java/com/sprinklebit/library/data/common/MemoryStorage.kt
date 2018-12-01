@@ -66,7 +66,6 @@ open class MemoryStorage<Query, Entity>
             var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
                 observable = fetcher.invoke(query)
-                        .subscribeOn(Schedulers.io())
                         .toObservable()
                         .doOnNext { entity ->
                             cache.put(query, CachePolicy.createEntry(entity))

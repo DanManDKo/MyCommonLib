@@ -37,7 +37,6 @@ private constructor(max: Int,
         var observable: Observable<Entity>? = fetchMap[query]
         if (observable == null) {
             observable = fetcher.invoke(query)
-                    .subscribeOn(Schedulers.io())
                     .toObservable()
                     .doOnNext { cacheInfo.put(query, CachePolicy.createEntry()) }
                     .flatMap { permanent.write(query, it).toObservable<Entity>() }

@@ -109,7 +109,6 @@ private constructor(max: Int,
                                 .toObservable()
                     }
             observable = observable!!
-                    .subscribeOn(Schedulers.io())
                     .doOnTerminate { fetchMap.remove(query) }
                     .doOnDispose { fetchMap.remove(query) }
                     .publish()
