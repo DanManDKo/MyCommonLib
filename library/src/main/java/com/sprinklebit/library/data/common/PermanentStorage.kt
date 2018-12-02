@@ -59,10 +59,10 @@ private constructor(max: Int,
         return cacheInfo[query]
                 .map { cachedEntry -> !cachePolicy.test(cachedEntry) }
                 .toSingle(true)
-                .flatMapCompletable { expired ->
-                    if (expired) fetch(query)
-                    else Completable.complete()
-                }.toObservable()
+                .filter { expired -> expired }
+                .observeOn(Schedulers.io())
+                .flatMapCompletable { fetch(query) }
+                .toObservable()
     }
 
     fun <T> makeAction(query: Query, observable: Observable<T>): Observable<T> {

@@ -67,18 +67,15 @@ private constructor(max: Int,
         return cache[query]
                 .map { cachedEntry -> !cachePolicy.test(cachedEntry) }
                 .defaultIfEmpty(true)
-                .flatMapCompletable { expired ->
-                    if (expired) {
-                        Completable.create {
-                            val exception = fetchNext(query, true).blockingGet()
-                            if (exception != null && !it.isDisposed) {
-                                it.onError(exception)
-                            }
-                            it.onComplete()
+                .filter { expired -> expired }
+                .observeOn(Schedulers.io())
+                .flatMapCompletable {
+                    Completable.create { emitter ->
+                        val exception = fetchNext(query, true).blockingGet()
+                        if (exception != null && !emitter.isDisposed) {
+                            emitter.onError(exception)
                         }
-
-                    } else {
-                        Completable.complete()
+                        emitter.onComplete()
                     }
                 }.toObservable()
     }

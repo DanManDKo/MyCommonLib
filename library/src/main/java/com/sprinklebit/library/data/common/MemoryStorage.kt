@@ -5,7 +5,6 @@ import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -19,8 +18,8 @@ import java.util.concurrent.TimeUnit
  */
 open class MemoryStorage<Query, Entity>
 (max: Int,
-            private val cachePolicy: CachePolicy,
-            private val fetcher: ((Query) -> Single<Entity>)?) {
+ private val cachePolicy: CachePolicy,
+ private val fetcher: ((Query) -> Single<Entity>)?) {
 
     protected val cache: ObservableLruCache<Query, CachedEntry<Entity>> = ObservableLruCache(max)
 
@@ -93,17 +92,15 @@ open class MemoryStorage<Query, Entity>
         return cache[query]
                 .map { cachedEntry -> !cachePolicy.test(cachedEntry) }
                 .toSingle(true)
-                .flatMapCompletable { expired ->
-                    if (expired) {
-                        Completable.create {
-                            val exception = fetch(query).blockingGet()
-                            if (exception != null && !it.isDisposed) {
-                                it.onError(exception)
-                            }
-                            it.onComplete()
+                .filter { expired -> expired }
+                .observeOn(Schedulers.io())
+                .flatMapCompletable {
+                    Completable.create { emitter ->
+                        val exception = fetch(query).blockingGet()
+                        if (exception != null && !emitter.isDisposed) {
+                            emitter.onError(exception)
                         }
-                    } else {
-                        Completable.complete()
+                        emitter.onComplete()
                     }
                 }.toObservable()
     }
