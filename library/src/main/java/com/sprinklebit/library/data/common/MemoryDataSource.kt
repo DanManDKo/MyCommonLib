@@ -1,5 +1,6 @@
 package com.sprinklebit.library.data.common
 
+import android.app.DownloadManager
 import android.arch.paging.DataSource
 import android.arch.paging.PageKeyedDataSource
 import android.arch.paging.PagedList
@@ -26,7 +27,7 @@ private constructor(private val capacity: Int,
                     private val prefetchDistance: Int,
                     private val enablePlaceholders: Boolean,
                     private val cachePolicy: CachePolicy,
-                    private val transform: ((List<Entity>) -> List<Entity>)? = null,
+                    private val mapBeforeUpdate: ((List<Entity>) -> List<Entity>)? = null,
                     private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)) {
 
     private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(capacity)
@@ -66,7 +67,7 @@ private constructor(private val capacity: Int,
                                         page.lastObject
                                 ))
                                 .blockingGet()
-                        transform?.invoke(newList.data)
+                        mapBeforeUpdate?.invoke(newList.data)
                         page.addResult(newList.data)
                         page.hasNext = newList.hasNext
                         page.maxCount = newList.maxCount
@@ -106,7 +107,7 @@ private constructor(private val capacity: Int,
                                     page.lastObject
                             ))
                             .blockingGet()
-                    transform?.invoke(newList.data)
+                    mapBeforeUpdate?.invoke(newList.data)
                     page.addResult(newList.data)
                     page.hasNext = newList.hasNext
                     page.maxCount = newList.maxCount
@@ -153,7 +154,7 @@ private constructor(private val capacity: Int,
                 .doOnSuccess {
                     cache.clear()
                     val page = Page<Entity>(it.hasNext, it.maxCount)
-                    transform?.invoke(it.data)
+                    mapBeforeUpdate?.invoke(it.data)
                     page.addResult(it.data)
                     cache.put(query, CachePolicy.createEntry(page))
                 }
@@ -217,7 +218,7 @@ private constructor(private val capacity: Int,
         private var cachePolicy: CachePolicy? = null
         private var prefetchDistance: Int = 5
         private var enablePlaceholders: Boolean = false
-        private var transform: ((List<Entity>) -> List<Entity>)? = null
+        private var mapBeforeUpdate: ((List<Entity>) -> List<Entity>)? = null
 
         fun capacity(capacity: Int): Builder<Query, Entity> {
             this.capacity = capacity
@@ -249,8 +250,12 @@ private constructor(private val capacity: Int,
             return this
         }
 
-        fun map(transform: ((List<Entity>) -> List<Entity>)): Builder<Query, Entity>{
-            this.transform = transform
+        /**
+         * @param mapBeforeUpdate  apply a transform on a list of Entity
+         */
+
+        fun mapBeforeUpdate(mapBeforeUpdate: ((List<Entity>) -> List<Entity>)): Builder<Query, Entity>{
+            this.mapBeforeUpdate = mapBeforeUpdate
             return this
         }
 
@@ -266,7 +271,7 @@ private constructor(private val capacity: Int,
                     prefetchDistance,
                     enablePlaceholders,
                     cachePolicy!!,
-                    transform,
+                    mapBeforeUpdate,
                     fetcher)
         }
     }
