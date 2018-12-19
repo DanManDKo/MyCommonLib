@@ -179,6 +179,7 @@ private constructor(private val capacity: Int,
                             }
                         }
                         if (changed) {
+                            mapBeforeUpdate?.invoke(page.getDataList())
                             cache.put(cacheEntity.key, CachePolicy.createEntry(page))
                             updateSubject.onNext(cacheEntity.key)
                         }
@@ -201,6 +202,7 @@ private constructor(private val capacity: Int,
                             }
                         }
                         if (changed) {
+                            mapBeforeUpdate?.invoke(page.getDataList())
                             cache.put(query, CachePolicy.createEntry(page))
                             updateSubject.onNext(query)
                         }
@@ -251,7 +253,7 @@ private constructor(private val capacity: Int,
         }
 
         /**
-         * @param mapBeforeUpdate  apply a transform on a list of Entity
+         * @param mapBeforeUpdate  apply a transform on a list of Entity before any update
          */
 
         fun mapBeforeUpdate(mapBeforeUpdate: ((List<Entity>) -> List<Entity>)): Builder<Query, Entity>{
