@@ -69,6 +69,8 @@
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/titleTv"
                 tools:text="text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text " />
+
+
         </android.support.constraint.ConstraintLayout>
 
     </FrameLayout>
