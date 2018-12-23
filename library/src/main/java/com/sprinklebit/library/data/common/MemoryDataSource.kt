@@ -255,7 +255,6 @@ private constructor(private val capacity: Int,
         /**
          * @param mapBeforeUpdate  apply a transform on a list of Entity before any update
          */
-
         fun mapBeforeUpdate(mapBeforeUpdate: ((List<Entity>) -> List<Entity>)): Builder<Query, Entity>{
             this.mapBeforeUpdate = mapBeforeUpdate
             return this
