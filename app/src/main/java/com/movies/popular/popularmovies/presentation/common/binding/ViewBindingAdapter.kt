@@ -1,7 +1,7 @@
 package com.movies.popular.popularmovies.presentation.common.binding
 
-import android.databinding.BindingAdapter
-import android.support.v4.view.ViewCompat
+import androidx.databinding.BindingAdapter
+import androidx.core.view.ViewCompat
 import android.view.View
 
 /**

@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.domain.interactor
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import com.movies.popular.popularmovies.domain.model.Movie
 import com.movies.popular.popularmovies.domain.repository.MovieRepository
 import io.reactivex.Completable

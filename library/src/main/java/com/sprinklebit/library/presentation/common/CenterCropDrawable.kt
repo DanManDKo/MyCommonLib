@@ -8,9 +8,9 @@ import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import android.support.annotation.DrawableRes
-import android.support.annotation.IntRange
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.annotation.IntRange
+import androidx.core.content.ContextCompat
 
 /**
  * Drawable decorator which draws the target drawable similarly to an ImageView with scaleType=centerCrop

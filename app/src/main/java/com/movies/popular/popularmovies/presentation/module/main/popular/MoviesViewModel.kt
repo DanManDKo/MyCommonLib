@@ -1,7 +1,7 @@
 package com.movies.popular.popularmovies.presentation.module.main.popular
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.PagedList
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagedList
 import com.movies.popular.popularmovies.domain.interactor.MovieInteractor
 import com.movies.popular.popularmovies.domain.model.Movie
 import com.movies.popular.popularmovies.presentation.common.BaseViewModel

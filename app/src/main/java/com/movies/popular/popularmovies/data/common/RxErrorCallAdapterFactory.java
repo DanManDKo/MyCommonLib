@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.data.common;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.movies.popular.popularmovies.exeption.APIException;

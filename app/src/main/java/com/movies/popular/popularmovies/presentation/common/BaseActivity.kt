@@ -3,8 +3,8 @@ package com.movies.popular.popularmovies.presentation.common
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import com.f2prateek.dart.Dart
 import com.movies.popular.popularmovies.BuildConfig
 import dagger.android.AndroidInjection
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
-    internal lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    internal lateinit var fragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (BuildConfig.DEBUG) {
@@ -43,7 +43,7 @@ open class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
         return true
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> {
         return fragmentInjector
     }
 }

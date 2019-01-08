@@ -10,32 +10,48 @@
             type="com.movies.popular.popularmovies.presentation.module.main.popular.MoviesViewModel" />
     </data>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRl"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <FrameLayout
+        <com.sprinklebit.library.presentation.widget.CenterIconButton
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="150dp"
+            android:drawableTop="@drawable/ic_directions_walk_black_24dp"
+            android:text="Text text text L"
+            android:textAlignment="center" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRl"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:visibility="@{viewModel.contentState.content ? View.VISIBLE : View.GONE}"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-            <include
-                layout="@layout/state_loading_top"
-                android:visibility="@{viewModel.contentState.loading ? View.VISIBLE : View.GONE}" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{viewModel.contentState.content ? View.VISIBLE : View.GONE}" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Error"
-                android:visibility="gone" />
+                <include
+                    layout="@layout/state_loading_top"
+                    android:visibility="@{viewModel.contentState.loading ? View.VISIBLE : View.GONE}" />
 
-        </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Error"
+                    android:visibility="gone" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            </FrameLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
 </layout>

@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.presentation.common
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 /**
  * Created with Android Studio.

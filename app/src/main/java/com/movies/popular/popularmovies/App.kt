@@ -1,7 +1,7 @@
 package com.movies.popular.popularmovies
 
 import android.app.Activity
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDexApplication
 import com.evernote.android.state.StateSaver
 import com.movies.popular.popularmovies.di.AppComponent
 import com.movies.popular.popularmovies.di.DaggerAppComponent

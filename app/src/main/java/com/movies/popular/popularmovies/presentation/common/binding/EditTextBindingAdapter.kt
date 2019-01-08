@@ -1,7 +1,7 @@
 package com.movies.popular.popularmovies.presentation.common.binding
 
-import android.databinding.BindingAdapter
-import android.support.design.widget.TextInputLayout
+import androidx.databinding.BindingAdapter
+import com.google.android.material.textfield.TextInputLayout
 
 /**
  * Created with Android Studio.

@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.domain.repository
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import com.movies.popular.popularmovies.domain.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Observable

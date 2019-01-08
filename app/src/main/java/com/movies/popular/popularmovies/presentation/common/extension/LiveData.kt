@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.presentation.common.extension
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 
 /**
  * User: Sasha Shcherbinin

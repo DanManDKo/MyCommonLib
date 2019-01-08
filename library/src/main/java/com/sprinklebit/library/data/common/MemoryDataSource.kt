@@ -1,10 +1,10 @@
 package com.sprinklebit.library.data.common
 
 import android.app.DownloadManager
-import android.arch.paging.DataSource
-import android.arch.paging.PageKeyedDataSource
-import android.arch.paging.PagedList
-import android.arch.paging.RxPagedListBuilder
+import androidx.paging.DataSource
+import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagedList
+import androidx.paging.RxPagedListBuilder
 import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache

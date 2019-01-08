@@ -23,13 +23,10 @@ allprojects {
 ext {
     retrofitVersion = '2.3.0'
     okhttp3Version = '3.9.1'
-    glideVersion = '4.7.1'
-    dagger_version = "2.16"
-    platformToolsVersion = '28.0.0'
+    glideVersion = '4.8.0'
+    dagger_version = '2.16'
     pagingVersion = '1.0.1'
-    lifecycleVersion = '1.1.1'
 }
-
 
 task clean(type: Delete) {
     delete rootProject.buildDir

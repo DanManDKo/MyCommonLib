@@ -1,7 +1,8 @@
 package com.movies.popular.popularmovies.presentation.module.main
 
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
+import android.view.Menu
 import com.movies.popular.popularmovies.R
 import com.movies.popular.popularmovies.databinding.ActivityMainBinding
 import com.movies.popular.popularmovies.presentation.common.BaseActivity
@@ -22,6 +23,10 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         if (savedInstanceState == null) mainRouter.showMoviesFragment()
+        setSupportActionBar(binding.toolbar)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
 }

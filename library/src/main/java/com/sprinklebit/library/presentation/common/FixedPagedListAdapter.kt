@@ -1,23 +1,23 @@
 package com.sprinklebit.library.presentation.common
 
-import android.arch.paging.PagedList
-import android.arch.paging.PagedListAdapter
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.paging.PagedList
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 
 
 /**
  * User: Sasha Shcherbinin
  * Date : 8/27/18
  */
-abstract class FixedPagedListAdapter<T, VH : RecyclerView.ViewHolder>
+abstract class FixedPagedListAdapter<T, VH : androidx.recyclerview.widget.RecyclerView.ViewHolder>
 constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapter<T, VH>(diffCallback) {
 
     private var lastPos = 0
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    override fun onAttachedToRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         this.recyclerView = recyclerView
         super.onAttachedToRecyclerView(recyclerView)
     }
@@ -28,7 +28,7 @@ constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapt
                 pagedList != null &&
                 currentList!!.size >= pagedList.size &&
                 pagedList.isNotEmpty() &&
-                diffCallback.areItemsTheSame(currentList!![pagedList.size - 1], pagedList[pagedList.size - 1])
+                diffCallback.areItemsTheSame(currentList!![pagedList.size - 1]!!, pagedList[pagedList.size - 1]!!)
                 && pagedList.size <= recyclerView.childCount) {
             pagedList.loadAround(pagedList.size - 1)
         }

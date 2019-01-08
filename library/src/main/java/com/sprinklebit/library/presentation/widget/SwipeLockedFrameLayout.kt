@@ -1,7 +1,7 @@
 package com.sprinklebit.library.presentation.widget
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewParent
@@ -19,7 +19,7 @@ class SwipeLockedFrameLayout(context: Context, attrs: AttributeSet)
         if (view.parent != null) {
             notifyAllParentsExceptRecyclerDoNotInterceptSwipe(view.parent)
         }
-        if (view !is RecyclerView) {
+        if (view !is androidx.recyclerview.widget.RecyclerView) {
             view.requestDisallowInterceptTouchEvent(true)
         } else {
             view.requestDisallowInterceptTouchEvent(false)

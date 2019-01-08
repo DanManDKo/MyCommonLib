@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.data.module.movie
 
-import android.arch.paging.PagedList
+import androidx.paging.PagedList
 import com.movies.popular.popularmovies.domain.model.Movie
 import com.movies.popular.popularmovies.domain.repository.MovieRepository
 import com.sprinklebit.library.data.common.MemoryDataSource

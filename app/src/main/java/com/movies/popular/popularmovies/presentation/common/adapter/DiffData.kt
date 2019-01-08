@@ -1,8 +1,8 @@
 package com.movies.popular.popularmovies.presentation.common.adapter
 
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import timber.log.Timber
 
 /**
@@ -10,8 +10,8 @@ import timber.log.Timber
  * PersonalInfo: Sasha Shcherbinin
  * Date: 10/31/17
  */
-class DiffData<Type>(private val recyclerView: RecyclerView,
-                     private val adapter: RecyclerView.Adapter<*>,
+class DiffData<Type>(private val recyclerView: androidx.recyclerview.widget.RecyclerView,
+                     private val adapter: androidx.recyclerview.widget.RecyclerView.Adapter<*>,
                      private val isItemTheSame: (Type, Type) -> Boolean) {
 
     private val data = ArrayList<Type>()
@@ -20,8 +20,8 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
         val copyData = ArrayList(newData)
         if (data.size > 0 && copyData.size > 1) {
             var clipTop = true
-            if (recyclerView.layoutManager is LinearLayoutManager) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            if (recyclerView.layoutManager is androidx.recyclerview.widget.LinearLayoutManager) {
+                val layoutManager = recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
                 clipTop = !layoutManager.reverseLayout
             }
             val offset = recyclerView.computeVerticalScrollOffset()

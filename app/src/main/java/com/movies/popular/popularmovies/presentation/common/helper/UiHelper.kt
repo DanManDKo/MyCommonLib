@@ -2,7 +2,7 @@ package com.movies.popular.popularmovies.presentation.common.helper
 
 import android.app.Activity
 import android.content.Context
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast

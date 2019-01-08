@@ -1,7 +1,7 @@
 package com.movies.popular.popularmovies.presentation.common.binding
 
-import android.databinding.BindingAdapter
-import android.support.v4.widget.SwipeRefreshLayout
+import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 /**
  * Created with Android Studio.
@@ -13,13 +13,13 @@ object SwipeBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(value = ["android:srl_onRefresh"], requireAll = false)
-    fun onRefresh(swipe: SwipeRefreshLayout, listener: SwipeRefreshLayout.OnRefreshListener) {
+    fun onRefresh(swipe: androidx.swiperefreshlayout.widget.SwipeRefreshLayout, listener: androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener) {
         swipe.setOnRefreshListener(listener)
     }
 
     @JvmStatic
     @BindingAdapter(value = ["android:srl_setRefreshing"], requireAll = false)
-    fun setRefresing(swipe: SwipeRefreshLayout, refreshing: Boolean) {
+    fun setRefresing(swipe: androidx.swiperefreshlayout.widget.SwipeRefreshLayout, refreshing: Boolean) {
         swipe.isRefreshing = refreshing
     }
 

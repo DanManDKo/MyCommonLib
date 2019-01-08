@@ -3,9 +3,9 @@ package com.sprinklebit.library.presentation.widget
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.AppCompatTextView
+import androidx.annotation.ColorInt
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.appcompat.widget.AppCompatTextView
 import android.util.AttributeSet
 import com.sprinklebit.library.R
 

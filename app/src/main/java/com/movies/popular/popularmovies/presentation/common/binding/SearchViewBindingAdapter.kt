@@ -1,7 +1,7 @@
 package com.movies.popular.popularmovies.presentation.common.binding
 
-import android.databinding.BindingAdapter
-import android.support.v7.widget.SearchView
+import androidx.databinding.BindingAdapter
+import androidx.appcompat.widget.SearchView
 
 /**
  * Created with Android Studio.

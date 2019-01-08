@@ -1,9 +1,9 @@
 package com.movies.popular.popularmovies.presentation.module.main.popular
 
 import android.content.Context
-import android.databinding.DataBindingUtil
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.movies.popular.popularmovies.R
@@ -33,7 +33,7 @@ class MoviesAdapter(context: Context, private val viewModel: MoviesViewModel)
     }
 
     inner class ItemViewHolder(private val binding: ItemMovieBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+        : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Movie?) {
             binding.item = item

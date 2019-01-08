@@ -2,8 +2,8 @@ package com.movies.popular.popularmovies.presentation.common
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import com.hannesdorfmann.fragmentargs.FragmentArgs
 
 import dagger.android.support.AndroidSupportInjection
@@ -14,7 +14,7 @@ import timber.log.Timber
  * PersonalInfo: Sasha Shcherbinin
  * Date: 8/20/17
  */
-open class BaseFragment : Fragment() {
+open class BaseFragment : androidx.fragment.app.Fragment() {
 
     override fun onAttach(context: Context?) {
         try {

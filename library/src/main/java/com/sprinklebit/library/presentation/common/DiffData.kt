@@ -2,9 +2,9 @@ package com.sprinklebit.library.presentation.common
 
 import android.os.Handler
 import android.os.Looper
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -15,8 +15,8 @@ import kotlin.collections.ArrayList
  * PersonalInfo: Sasha Shcherbinin
  * Date: 10/31/17
  */
-class DiffData<Type>(private val recyclerView: RecyclerView,
-                     private val adapter: RecyclerView.Adapter<*>,
+class DiffData<Type>(private val recyclerView: androidx.recyclerview.widget.RecyclerView,
+                     private val adapter: androidx.recyclerview.widget.RecyclerView.Adapter<*>,
                      private val isItemTheSame: (Type, Type) -> Boolean) {
 
     private var data: List<Type> = Collections.emptyList()
@@ -30,8 +30,8 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
         if (data.isNotEmpty() && newData.size > 1) {
             val oldData = data
             var clipTop = true
-            if (recyclerView.layoutManager is LinearLayoutManager) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            if (recyclerView.layoutManager is androidx.recyclerview.widget.LinearLayoutManager) {
+                val layoutManager = recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
                 clipTop = !layoutManager.reverseLayout
             }
             val offset = recyclerView.computeVerticalScrollOffset()

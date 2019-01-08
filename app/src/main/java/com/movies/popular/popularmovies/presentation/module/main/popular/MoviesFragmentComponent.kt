@@ -1,6 +1,6 @@
 package com.movies.popular.popularmovies.presentation.module.main.popular
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.movies.popular.popularmovies.di.scope.FragmentScope
 import dagger.Module
 import dagger.Provides
@@ -24,6 +24,6 @@ interface MoviesFragmentComponent : AndroidInjector<MoviesFragment> {
     @Module
     class FragmentModule {
         @Provides
-        internal fun provideFragment(fragment: MoviesFragment): Fragment = fragment
+        internal fun provideFragment(fragment: MoviesFragment): androidx.fragment.app.Fragment = fragment
     }
 }
