@@ -72,6 +72,13 @@ constructor(private val movieInteractor: MovieInteractor,
 //        itemClickedEvent.call()
     }
 
+    fun onDeleteItem(movie: Movie) {
+        RxDisposable.manage(this, "delete",
+                movieInteractor.remove(movie.id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ }, ({ errorHandler.handleError(it) })))
+    }
+
     fun onRefresh() {
         RxDisposable.manage(this, "refresh",
                 movieInteractor.refresh()

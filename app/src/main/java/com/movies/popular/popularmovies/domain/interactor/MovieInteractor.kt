@@ -30,4 +30,8 @@ constructor(private val movieRepository: MovieRepository) {
     fun updateMovie(id: Int): Completable {
         return movieRepository.updateMovie(id)
     }
+
+    fun remove(id: Int): Completable {
+        return movieRepository.remove(id)
+    }
 }

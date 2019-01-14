@@ -18,4 +18,6 @@ interface MovieRepository {
     fun observeLoading(): Observable<Boolean>
 
     fun updateMovie(id: Int): Completable
+
+    fun remove(id: Int): Completable
 }
