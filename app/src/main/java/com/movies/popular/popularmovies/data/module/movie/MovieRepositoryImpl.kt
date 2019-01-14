@@ -50,4 +50,8 @@ constructor(private val movieNetworkStorage: MovieNetworkStorage)
             movie.copy(overview = "", title = "")
         })
     }
+
+    override fun remove(id: Int): Completable {
+        return dataSource.remove{ it.id == id }
+    }
 }

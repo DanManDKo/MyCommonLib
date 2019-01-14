@@ -191,23 +191,35 @@ private constructor(private val capacity: Int,
             : Completable {
         return cache[query]
                 .flatMapCompletable { cacheEntity ->
-                    Completable.fromAction {
-                        val page = cacheEntity.entry
-                        var changed = false
-                        for (index in page.getDataList().size - 1 downTo 0) {
-                            val entity = page.getDataList()[index]
-                            if (filter.invoke(entity)) {
-                                page.remove(index)
-                                changed = true
-                            }
-                        }
-                        if (changed) {
-                            mapBeforeUpdate?.invoke(page.getDataList())
-                            cache.put(query, CachePolicy.createEntry(page))
-                            updateSubject.onNext(query)
-                        }
-                    }
+                    removeEntity(cacheEntity, query, filter)
                 }
+    }
+
+    fun remove(filter: (Entity) -> Boolean): Completable {
+        return cache.get()
+                .concatMapCompletable { cacheEntity ->
+                    removeEntity(cacheEntity.value, cacheEntity.key, filter)
+                }
+    }
+
+    private fun removeEntity(cacheEntity: CachedEntry<Page<Entity>>, query: Query,
+                             filter: (Entity) -> Boolean): Completable {
+        return Completable.fromAction {
+            val page = cacheEntity.entry
+            var changed = false
+            for (index in page.getDataList().size - 1 downTo 0) {
+                val entity = page.getDataList()[index]
+                if (filter.invoke(entity)) {
+                    page.remove(index)
+                    changed = true
+                }
+            }
+            if (changed) {
+                mapBeforeUpdate?.invoke(page.getDataList())
+                cache.put(query, CachePolicy.createEntry(page))
+                updateSubject.onNext(query)
+            }
+        }
     }
 
     class Builder<Query, Entity>(
@@ -255,7 +267,7 @@ private constructor(private val capacity: Int,
         /**
          * @param mapBeforeUpdate  apply a transform on a list of Entity before any update
          */
-        fun mapBeforeUpdate(mapBeforeUpdate: ((List<Entity>) -> List<Entity>)): Builder<Query, Entity>{
+        fun mapBeforeUpdate(mapBeforeUpdate: ((List<Entity>) -> List<Entity>)): Builder<Query, Entity> {
             this.mapBeforeUpdate = mapBeforeUpdate
             return this
         }
