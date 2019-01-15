@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
+import java.lang.RuntimeException
 
 /**
  * Created with Android Studio.
@@ -21,7 +22,7 @@ import io.reactivex.subjects.ReplaySubject
  * Date: 2/25/18
  */
 class MemoryDataSource<Query, Entity>
-private constructor(private val capacity: Int,
+private constructor(capacity: Int,
                     private val limit: Int,
                     private val initialLoadSizeHint: Int,
                     private val prefetchDistance: Int,
@@ -85,7 +86,11 @@ private constructor(private val capacity: Int,
                         loadingSubject.onNext(Pair(query, false))
                     }
                 } catch (e: Throwable) {
-                    errorSubject.onNext(Pair(query, e));
+                    var error = e
+                    if (error is RuntimeException) {
+                        e.cause?.let { error = it }
+                    }
+                    errorSubject.onNext(Pair(query, e))
                     loadingSubject.onNext(Pair(query, false))
                 }
             }
@@ -118,7 +123,7 @@ private constructor(private val capacity: Int,
                     }
                     callback.onResult(newList.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
-                    errorSubject.onNext(Pair(query, e));
+                    errorSubject.onNext(Pair(query, e))
                     loadingSubject.onNext(Pair(query, false))
                 }
             }
