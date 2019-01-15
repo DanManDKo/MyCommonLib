@@ -1,6 +1,5 @@
 package com.sprinklebit.library.data.common
 
-import android.app.DownloadManager
 import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
@@ -86,11 +85,11 @@ private constructor(capacity: Int,
                         loadingSubject.onNext(Pair(query, false))
                     }
                 } catch (e: Throwable) {
-                    var error = e
-                    if (error is RuntimeException) {
-                        e.cause?.let { error = it }
+                    var trueError = e
+                    if (trueError is RuntimeException) {
+                        e.cause?.let { trueError = it }
                     }
-                    errorSubject.onNext(Pair(query, e))
+                    errorSubject.onNext(Pair(query, trueError))
                     loadingSubject.onNext(Pair(query, false))
                 }
             }
@@ -123,7 +122,11 @@ private constructor(capacity: Int,
                     }
                     callback.onResult(newList.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
-                    errorSubject.onNext(Pair(query, e))
+                    var trueError = e
+                    if (trueError is RuntimeException) {
+                        e.cause?.let { trueError = it }
+                    }
+                    errorSubject.onNext(Pair(query, trueError))
                     loadingSubject.onNext(Pair(query, false))
                 }
             }
