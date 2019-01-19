@@ -24,14 +24,37 @@ constructor(private val diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapt
 
     override fun submitList(pagedList: PagedList<T>?) {
         super.submitList(pagedList)
+
         if (currentList != null &&
                 pagedList != null &&
                 currentList!!.size >= pagedList.size &&
                 pagedList.isNotEmpty() &&
-                diffCallback.areItemsTheSame(currentList!![pagedList.size - 1]!!, pagedList[pagedList.size - 1]!!)
-                && pagedList.size <= recyclerView.childCount) {
+                areItemsTheSame(pagedList) &&
+                pagedList.size <= recyclerView.childCount) {
             pagedList.loadAround(pagedList.size - 1)
         }
+    }
+
+    private fun areItemsTheSame(pagedList: PagedList<T>): Boolean {
+        val oldItem = currentList!![pagedList.size - 1]
+        val newItem = pagedList[pagedList.size - 1]
+
+        if (oldItem != null && newItem != null) {
+            return diffCallback.areItemsTheSame(oldItem, newItem)
+        }
+
+        if (oldItem == null && newItem == null) {
+            return true
+        }
+
+        if (oldItem == null && newItem != null) {
+            return false
+        }
+
+        if (oldItem != null && newItem == null) {
+            return false
+        }
+        throw IllegalArgumentException("Unexpected items state old:$oldItem, new:$newItem")
     }
 
 }
