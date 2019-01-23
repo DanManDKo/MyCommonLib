@@ -19,18 +19,38 @@ import androidx.core.content.ContextCompat
  * final Drawable bg = getResources().getDrawable(R.drawable.screen);
  * getWindow().setBackgroundDrawable(new CenterCropDrawable(bg));
  */
-class CenterCropDrawable(context: Context, @DrawableRes resId: Int) : Drawable() {
+class CenterCropDrawable : Drawable {
 
-    private var target: Drawable? = ContextCompat.getDrawable(context, resId)
+    private var target: Drawable?
+    private val consState: ConstantState
 
-    private val consState = object : ConstantState() {
+    constructor(context: Context, @DrawableRes resId: Int) : super() {
+        this.target = ContextCompat.getDrawable(context, resId)
 
-        override fun getChangingConfigurations(): Int {
-            return this@CenterCropDrawable.changingConfigurations
+        this.consState = object : ConstantState() {
+
+            override fun getChangingConfigurations(): Int {
+                return this@CenterCropDrawable.changingConfigurations
+            }
+
+            override fun newDrawable(): Drawable {
+                return CenterCropDrawable(context, resId)
+            }
         }
+    }
 
-        override fun newDrawable(): Drawable {
-            return CenterCropDrawable(context, resId)
+    constructor(drawable: Drawable) : super() {
+        this.target = drawable
+
+        this.consState = object : ConstantState() {
+
+            override fun getChangingConfigurations(): Int {
+                return this@CenterCropDrawable.changingConfigurations
+            }
+
+            override fun newDrawable(): Drawable {
+                return CenterCropDrawable(drawable)
+            }
         }
     }
 
