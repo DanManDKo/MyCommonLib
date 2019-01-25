@@ -13,7 +13,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
-import java.lang.RuntimeException
 
 /**
  * Created with Android Studio.
@@ -51,7 +50,7 @@ private constructor(capacity: Int,
 
             override fun loadInitial(params: LoadInitialParams<Page<Entity>>,
                                      callback: LoadInitialCallback<Page<Entity>, Entity>) {
-                loadingSubject.onNext(Pair(query, true))
+                loadingOnNextSynchronized(Pair(query, true))
                 try {
                     val page = cache[query]
                             .filter { cachePolicy.test(it) }
@@ -82,7 +81,7 @@ private constructor(capacity: Int,
                                 if (page.hasNext) page else null)
                     }
                     if (!page.hasNext) {
-                        loadingSubject.onNext(Pair(query, false))
+                        loadingOnNextSynchronized(Pair(query, false))
                     }
                 } catch (e: Throwable) {
                     var trueError = e
@@ -90,7 +89,7 @@ private constructor(capacity: Int,
                         e.cause?.let { trueError = it }
                     }
                     errorSubject.onNext(Pair(query, trueError))
-                    loadingSubject.onNext(Pair(query, false))
+                    loadingOnNextSynchronized(Pair(query, false))
                 }
             }
 
@@ -118,7 +117,7 @@ private constructor(capacity: Int,
                     cache.put(query, CachePolicy.createEntry(page))
 
                     if (!page.hasNext) {
-                        loadingSubject.onNext(Pair(query, false))
+                        loadingOnNextSynchronized(Pair(query, false))
                     }
                     callback.onResult(newList.data, if (page.hasNext) page else null)
                 } catch (e: Throwable) {
@@ -127,7 +126,7 @@ private constructor(capacity: Int,
                         e.cause?.let { trueError = it }
                     }
                     errorSubject.onNext(Pair(query, trueError))
-                    loadingSubject.onNext(Pair(query, false))
+                    loadingOnNextSynchronized(Pair(query, false))
                 }
             }
 
@@ -311,5 +310,9 @@ private constructor(capacity: Int,
             val maxCount: Int = -1
     )
 
+    @Synchronized
+    private fun loadingOnNextSynchronized(pair: Pair<Query, Boolean>) {
+        loadingSubject.onNext(pair)
+    }
 
 }
