@@ -50,7 +50,7 @@ class CenterIconButton : AppCompatButton {
                     com.sprinklebit.library.R.styleable.CenterIconButton_cib_drawable, -1)
 
             if (iconId != -1 && text != null) {
-                val buttonLabel = SpannableString(" $text")
+                val buttonLabel = SpannableString("   $text")
 
                 buttonLabel.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0,
                         buttonLabel.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

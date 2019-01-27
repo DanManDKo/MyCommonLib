@@ -22,7 +22,7 @@
             android:layout_height="60dp"
             app:cib_text="Text text text L"
             app:cib_drawableTint="@color/colorAccent"
-            app:cib_drawable="@drawable/ic_directions_walk_black_24dp"
+            app:cib_drawable="@drawable/ic_retrade"
             android:textAlignment="center" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
