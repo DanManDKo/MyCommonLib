@@ -1,8 +1,13 @@
 package com.sprinklebit.library.presentation.widget
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.AlignmentSpan
 import android.text.style.ImageSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
@@ -46,6 +51,10 @@ class CenterIconButton : AppCompatButton {
 
             if (iconId != -1 && text != null) {
                 val buttonLabel = SpannableString(" $text")
+
+                buttonLabel.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0,
+                        buttonLabel.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
                 var icon = ContextCompat.getDrawable(context, iconId)
 
                 if (tintColor != -1) {
@@ -53,8 +62,14 @@ class CenterIconButton : AppCompatButton {
                     DrawableCompat.setTint(icon, tintColor)
                 }
 
-                icon!!.setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
-                val imageSpan = ImageSpan(icon, ImageSpan.ALIGN_BOTTOM)
+                icon!!.setBounds(
+                        0,
+                        0,
+                        icon.intrinsicWidth,
+                        icon.intrinsicHeight
+                )
+                val imageSpan = CenteredImageSpan(icon, ImageSpan.ALIGN_BOTTOM)
+
                 buttonLabel.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 this.text = buttonLabel
             }
