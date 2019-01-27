@@ -3,7 +3,8 @@
 
     <declare-styleable name="CenterIconButton">
         <attr name="cib_drawableTint" format="color"/>
-        <attr name="android:drawablePadding"/>
+        <attr name="cib_drawable" format="reference"/>
+        <attr name="cib_text" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="CustomTextView">

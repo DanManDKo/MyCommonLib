@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -19,8 +20,9 @@
         <com.sprinklebit.library.presentation.widget.CenterIconButton
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:drawableStart="@drawable/ic_directions_walk_black_24dp"
-            android:text="Text text text L"
+            app:cib_text="Text text text L"
+            app:cib_drawableTint="@color/colorAccent"
+            app:cib_drawable="@drawable/ic_directions_walk_black_24dp"
             android:textAlignment="center" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
