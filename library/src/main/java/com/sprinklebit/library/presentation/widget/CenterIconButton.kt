@@ -38,17 +38,6 @@ class CenterIconButton : AppCompatButton {
             return textBoundsRect!!.width()
         }
 
-    private val texHeight: Int
-        get() {
-            if (textBoundsRect == null) {
-                textBoundsRect = Rect()
-            }
-            val paint = paint
-            val text = divideText()
-            paint.getTextBounds(text, 0, text.length, textBoundsRect)
-            return textBoundsRect!!.height()
-        }
-
     constructor(context: Context) : super(context) {
         init(context, null)
     }
@@ -151,12 +140,8 @@ class CenterIconButton : AppCompatButton {
 
         val leftDrawable = compoundDrawables[DRAWABLE_LEFT_POSITION]
         val rightDrawable = compoundDrawables[DRAWABLE_RIGHT_POSITION]
-        val topDrawable = compoundDrawables[DRAWABLE_TOP_POSITION]
-        val bottomDrawable = compoundDrawables[DRAWABLE_BOTTOM_POSITION]
         if (leftDrawable == null
-                && rightDrawable == null
-                && topDrawable == null
-                && bottomDrawable == null) return
+                && rightDrawable == null) return
 
         val textWidth = textWidth
         val iconPadding = Math.max(compoundDrawablePadding, 1)
@@ -178,28 +163,11 @@ class CenterIconButton : AppCompatButton {
             0
         }
 
-        val paddingSizeTopBottom = if (topDrawable != null && bottomDrawable != null) {
-            (height - topDrawable.intrinsicHeight
-                    - bottomDrawable.intrinsicHeight
-                    - texHeight
-                    - iconPadding * 4) / 2
-        } else if (topDrawable != null) {
-            (height - topDrawable.intrinsicHeight
-                    - iconPadding * 2
-                    - texHeight) / 2
-        } else if (bottomDrawable != null) {
-            (height - bottomDrawable.intrinsicHeight
-                    - iconPadding * 2
-                    - texHeight) / 2
-        } else {
-            0
-        }
-
         super.setPadding(
                 Math.max(paddingLeft, paddingSizeStartEnd),
-                Math.max(paddingTop, paddingSizeTopBottom),
+                paddingTop,
                 Math.max(paddingRight, paddingSizeStartEnd),
-                Math.max(paddingBottom, paddingSizeTopBottom))
+                paddingBottom)
     }
 
     private fun divideText(): String {
@@ -213,11 +181,11 @@ class CenterIconButton : AppCompatButton {
             list.add(tokenizer.nextToken())
         }
         if (list.size == 1) {
-            return if (isAllCaps) list[0].toUpperCase() else list.get(0)
+            return if (isAllCaps) list[0].toUpperCase() else list[0]
         }
         var longPart = list[0]
         for (i in 0 until list.size - 1) {
-            if (list.get(i + 1).length > list[i].length) {
+            if (list[i + 1].length > list[i].length) {
                 longPart = list[i + 1]
             }
         }

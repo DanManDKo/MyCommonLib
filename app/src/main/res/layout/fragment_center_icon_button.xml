@@ -7,7 +7,7 @@
     <com.sprinklebit.library.presentation.widget.CenterIconButton
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:drawableTop="@drawable/ic_directions_walk_black_24dp"
+        android:drawableStart="@drawable/ic_directions_walk_black_24dp"
         android:text="Text text text"
         android:textAlignment="center" />
 
