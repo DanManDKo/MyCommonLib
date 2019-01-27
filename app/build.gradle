@@ -69,7 +69,7 @@ dependencies {
     /* Architecture Components */
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
-    implementation 'androidx.paging:paging-runtime:2.0.0'
+    implementation 'androidx.paging:paging-runtime:2.1.0'
     implementation "android.arch.paging:rxjava2:$pagingVersion"
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     testImplementation 'androidx.arch.core:core-testing:2.0.0'

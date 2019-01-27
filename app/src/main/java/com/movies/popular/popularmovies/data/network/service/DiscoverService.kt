@@ -11,7 +11,7 @@ import retrofit2.http.Query
  */
 interface DiscoverService {
 
-    @GET("3/discover/movie_")
+    @GET("3/discover/movie")
     fun getMovies(@Query("sort_by") sortBy: String = "popularity.des",
                   @Query("page") page: Int,
                   @Query("with_genres") genres: String = "14")

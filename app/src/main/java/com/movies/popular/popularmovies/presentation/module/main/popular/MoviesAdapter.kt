@@ -3,13 +3,12 @@ package com.movies.popular.popularmovies.presentation.module.main.popular
 import android.content.Context
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
 import com.movies.popular.popularmovies.R
 import com.movies.popular.popularmovies.databinding.ItemMovieBinding
 import com.movies.popular.popularmovies.domain.model.Movie
-import com.sprinklebit.library.presentation.common.FixedPagedListAdapter
 
 
 /**
@@ -19,7 +18,7 @@ import com.sprinklebit.library.presentation.common.FixedPagedListAdapter
  * Time: 7:17 PM
  */
 class MoviesAdapter(context: Context, private val viewModel: MoviesViewModel)
-    : FixedPagedListAdapter<Movie, MoviesAdapter.ItemViewHolder>(DIFF_CALLBACK) {
+    : PagedListAdapter<Movie, MoviesAdapter.ItemViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(DataBindingUtil

@@ -18,8 +18,8 @@
 
         <com.sprinklebit.library.presentation.widget.CenterIconButton
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:drawableTop="@drawable/ic_directions_walk_black_24dp"
+            android:layout_height="60dp"
+            android:drawableStart="@drawable/ic_directions_walk_black_24dp"
             android:text="Text text text L"
             android:textAlignment="center" />
 

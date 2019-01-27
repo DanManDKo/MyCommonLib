@@ -4,7 +4,9 @@ import com.movies.popular.popularmovies.data.common.mappers.Mappers
 import com.movies.popular.popularmovies.data.network.mapper.MovieResponseMapper
 import com.movies.popular.popularmovies.data.network.service.DiscoverService
 import com.movies.popular.popularmovies.domain.model.Movie
+import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -20,6 +22,7 @@ constructor(private val discoverService: DiscoverService,
     fun getMovies(page: Int): Single<List<Movie>> {
         return if (page > 2) Single.just(ArrayList())
         else discoverService.getMovies(page = page)
+                .subscribeOn(Schedulers.io())
                 .map { Mappers.mapCollection(it.results, movieResponseMapper) }
                 .map {
                     val arrayList = ArrayList<Movie>()
