@@ -66,10 +66,10 @@ private constructor(capacity: Int,
                                         page.lastObject
                                 ))
                                 .blockingGet()
-                        mapBeforeUpdate?.invoke(newList.data)
                         page.addResult(newList.data)
                         page.hasNext = newList.hasNext
                         page.maxCount = newList.maxCount
+                        mapBeforeUpdate?.invoke(page.getDataList())
                         cache.put(query, CachePolicy.createEntry(page))
                     }
                     if (page.maxCount > 0) {
@@ -110,10 +110,10 @@ private constructor(capacity: Int,
                                     page.lastObject
                             ))
                             .blockingGet()
-                    mapBeforeUpdate?.invoke(newList.data)
                     page.addResult(newList.data)
                     page.hasNext = newList.hasNext
                     page.maxCount = newList.maxCount
+                    mapBeforeUpdate?.invoke(page.getDataList())
                     cache.put(query, CachePolicy.createEntry(page))
 
                     if (!page.hasNext) {
