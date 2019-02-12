@@ -10,7 +10,9 @@ import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import com.sprinklebit.library.data.common.cashe.Page
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 
@@ -148,6 +150,7 @@ private constructor(capacity: Int,
                             return dataSource
                         }
                     }, pagedListConfig)
+                            .setFetchScheduler(Schedulers.io())
                             .buildObservable()
                 }
     }
