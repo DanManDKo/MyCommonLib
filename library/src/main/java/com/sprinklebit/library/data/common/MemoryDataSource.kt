@@ -88,8 +88,8 @@ private constructor(capacity: Int,
                     if (trueError is RuntimeException) {
                         e.cause?.let { trueError = it }
                     }
-                    errorSubject.onNext(Pair(query, trueError))
                     loadingOnNextSynchronized(Pair(query, false))
+                    errorSubject.onNext(Pair(query, trueError))
                 }
             }
 
@@ -125,8 +125,8 @@ private constructor(capacity: Int,
                     if (trueError is RuntimeException) {
                         e.cause?.let { trueError = it }
                     }
-                    errorSubject.onNext(Pair(query, trueError))
                     loadingOnNextSynchronized(Pair(query, false))
+                    errorSubject.onNext(Pair(query, trueError))
                 }
             }
 
