@@ -6,6 +6,8 @@ import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
+import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
@@ -16,15 +18,16 @@ import java.util.concurrent.TimeUnit
  * User: Sasha Shcherbinin
  * Date: 2/25/18
  */
-open class MemoryStorage<Query, Entity>
-(max: Int,
- private val cachePolicy: CachePolicy,
- private val fetcher: ((Query) -> Single<Entity>)?) {
+open class MemoryStorage<Query, Entity>(max: Int,
+                                        private val cachePolicy: CachePolicy,
+                                        private val fetcher: ((Query) -> Single<Entity>)?) {
 
     protected val cache: ObservableLruCache<Query, CachedEntry<Entity>> = ObservableLruCache(max)
 
     protected val updateSubject = PublishSubject.create<Query>()
-    private val fetchMap = ConcurrentHashMap<Query, Observable<Entity>>()
+
+    private val fetchMap = ConcurrentHashMap<Query, ConnectableObservable<Entity>>()
+    private val disposableMap = ConcurrentHashMap<Query, Disposable>()
 
     operator fun get(query: Query): Observable<Entity> {
         val objectObservable = cache[query]
@@ -62,7 +65,7 @@ open class MemoryStorage<Query, Entity>
 
     fun fetch(query: Query): Completable {
         if (fetcher != null) {
-            var observable: Observable<Entity>? = fetchMap[query]
+            var observable: ConnectableObservable<Entity>? = fetchMap[query]
             if (observable == null) {
                 observable = fetcher.invoke(query)
                         .toObservable()
@@ -70,10 +73,16 @@ open class MemoryStorage<Query, Entity>
                             cache.put(query, CachePolicy.createEntry(entity))
                             updateSubject.onNext(query)
                         }
-                        .doOnTerminate { fetchMap.remove(query) }
-                        .doOnDispose { fetchMap.remove(query) }
+                        .doOnTerminate {
+                            fetchMap.remove(query)
+                            disposableMap.remove(query)?.dispose()
+                        }
+                        .doOnDispose {
+                            fetchMap.remove(query)
+                            disposableMap.remove(query)?.dispose()
+                        }
                         .publish()
-                        .refCount()
+                disposableMap[query] = observable!!.connect()
             }
             val finalObservable = observable
             return observable
