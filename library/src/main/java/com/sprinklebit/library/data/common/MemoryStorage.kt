@@ -26,8 +26,7 @@ open class MemoryStorage<Query, Entity>(max: Int,
 
     protected val updateSubject = PublishSubject.create<Query>()
 
-    private val fetchMap = ConcurrentHashMap<Query, ConnectableObservable<Entity>>()
-    private val disposableMap = ConcurrentHashMap<Query, Disposable>()
+    private val fetchMap = ConcurrentHashMap<Query, Observable<Entity>>()
 
     operator fun get(query: Query): Observable<Entity> {
         val objectObservable = cache[query]
@@ -65,7 +64,7 @@ open class MemoryStorage<Query, Entity>(max: Int,
 
     fun fetch(query: Query): Completable {
         if (fetcher != null) {
-            var observable: ConnectableObservable<Entity>? = fetchMap[query]
+            var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
                 observable = fetcher.invoke(query)
                         .toObservable()
@@ -73,16 +72,10 @@ open class MemoryStorage<Query, Entity>(max: Int,
                             cache.put(query, CachePolicy.createEntry(entity))
                             updateSubject.onNext(query)
                         }
-                        .doOnTerminate {
-                            fetchMap.remove(query)
-                            disposableMap.remove(query)?.dispose()
-                        }
-                        .doOnDispose {
-                            fetchMap.remove(query)
-                            disposableMap.remove(query)?.dispose()
-                        }
+                        .doOnTerminate { fetchMap.remove(query) }
+                        .doOnDispose { fetchMap.remove(query) }
                         .publish()
-                disposableMap[query] = observable!!.connect()
+                        .refCount()
             }
             val finalObservable = observable
             return observable
