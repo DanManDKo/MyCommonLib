@@ -10,7 +10,6 @@ import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import com.sprinklebit.library.data.common.cashe.Page
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -52,12 +51,16 @@ private constructor(capacity: Int,
 
             override fun loadInitial(params: LoadInitialParams<Page<Entity>>,
                                      callback: LoadInitialCallback<Page<Entity>, Entity>) {
-                loadingOnNextSynchronized(Pair(query, true))
                 try {
                     val page = cache[query]
                             .filter { cachePolicy.test(it) }
                             .map<Page<Entity>> { it.entry }
                             .blockingGet(Page(true))
+                    var loadingWasShown = false
+                    if (page.hasNext) {
+                        loadingOnNextSynchronized(Pair(query, true))
+                        loadingWasShown = true
+                    }
                     if (page.size() == 0) {
                         val newList = fetcher.invoke(
                                 Params(
@@ -82,7 +85,7 @@ private constructor(capacity: Int,
                         callback.onResult(ArrayList(page.getDataList()), null,
                                 if (page.hasNext) page else null)
                     }
-                    if (!page.hasNext) {
+                    if (!page.hasNext && loadingWasShown) {
                         loadingOnNextSynchronized(Pair(query, false))
                     }
                 } catch (e: Throwable) {
