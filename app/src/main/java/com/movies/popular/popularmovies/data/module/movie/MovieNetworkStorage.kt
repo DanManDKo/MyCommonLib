@@ -1,10 +1,9 @@
 package com.movies.popular.popularmovies.data.module.movie
 
-import com.movies.popular.popularmovies.data.common.mappers.Mappers
 import com.movies.popular.popularmovies.data.network.mapper.MovieResponseMapper
 import com.movies.popular.popularmovies.data.network.service.DiscoverService
 import com.movies.popular.popularmovies.domain.model.Movie
-import io.reactivex.Scheduler
+import com.sprinklebit.library.data.common.mappers.Mappers
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.util.*

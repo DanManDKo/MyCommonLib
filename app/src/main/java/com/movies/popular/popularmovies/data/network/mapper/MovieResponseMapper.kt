@@ -1,8 +1,8 @@
 package com.movies.popular.popularmovies.data.network.mapper
 
-import com.movies.popular.popularmovies.data.common.mappers.Mapper
 import com.movies.popular.popularmovies.data.network.model.MovieDto
 import com.movies.popular.popularmovies.domain.model.Movie
+import com.sprinklebit.library.data.common.mappers.Mapper
 import javax.inject.Inject
 
 /**
@@ -14,8 +14,8 @@ class MovieResponseMapper
 constructor()
     : Mapper<MovieDto, Movie> {
 
-    override fun map(var1: MovieDto?): Movie {
-        return Movie(var1?.id ?: 0, var1?.overview, var1?.title, var1?.posterPath)
+    override fun map(value: MovieDto): Movie {
+        return Movie(value.id ?: 0, value.overview, value.title, value.posterPath)
     }
 
 }
