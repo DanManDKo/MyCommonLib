@@ -33,7 +33,7 @@ private constructor(max: Int,
         return permanent.write(query, entity)
     }
 
-    fun fetch(query: Query): Completable {
+    fun refresh(query: Query): Completable {
         var observable: Observable<Entity>? = fetchMap[query]
         if (observable == null) {
             observable = fetcher.invoke(query)
@@ -61,7 +61,7 @@ private constructor(max: Int,
                 .toSingle(true)
                 .filter { expired -> expired }
                 .observeOn(Schedulers.io())
-                .flatMapCompletable { fetch(query) }
+                .flatMapCompletable { refresh(query) }
                 .toObservable()
     }
 

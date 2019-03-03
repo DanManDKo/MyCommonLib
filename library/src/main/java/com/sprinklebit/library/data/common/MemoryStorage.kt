@@ -6,8 +6,6 @@ import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
-import io.reactivex.observables.ConnectableObservable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
@@ -62,7 +60,8 @@ open class MemoryStorage<Query, Entity>(max: Int,
                 .ignoreElement()
     }
 
-    fun fetch(query: Query): Completable {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun refresh(query: Query): Completable {
         if (fetcher != null) {
             var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
@@ -98,7 +97,7 @@ open class MemoryStorage<Query, Entity>(max: Int,
                 .observeOn(Schedulers.io())
                 .flatMapCompletable {
                     Completable.create { emitter ->
-                        val exception = fetch(query).blockingGet()
+                        val exception = refresh(query).blockingGet()
                         if (exception != null && !emitter.isDisposed) {
                             emitter.onError(exception)
                         }
