@@ -4,8 +4,7 @@ package com.sprinklebit.library.utils
  * User: Sasha Shcherbinin
  * Date : 5/22/18
  */
-@Deprecated("Check on saveInstance == null and call method with parameters.")
-class OneTimeEvent constructor(private val event: () -> Unit) {
+class OneTimeAction constructor(private val event: () -> Unit) {
 
     private var firstTime: Boolean = true
 
