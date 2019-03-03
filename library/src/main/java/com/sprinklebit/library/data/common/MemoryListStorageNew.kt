@@ -34,7 +34,7 @@ class MemoryListStorageNew<Query, Entity>(max: Int, cachePolicy: CachePolicy,
                             if (filter.invoke(entity)) {
                                 val newEntity = onUpdateCallback.invoke(entity)
                                 dataList.removeAt(index)
-                                dataList.add(index, entity)
+                                dataList.add(index, newEntity)
                                 changed = true
                             }
                         }
