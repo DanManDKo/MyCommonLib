@@ -36,7 +36,7 @@ class Page<T>(var hasNext: Boolean = false,
     }
 
     fun getPage(refresh: Boolean): Int {
-        if (refresh) page = 0
+        if (refresh) page = 1
         return page
     }
 

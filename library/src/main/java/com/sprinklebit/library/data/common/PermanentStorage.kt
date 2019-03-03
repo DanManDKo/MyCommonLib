@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit
  * User: Sasha Shcherbinin
  * Date: 9/25/18
  */
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class PermanentStorage<Query, Entity>
 private constructor(max: Int,
                     private val cachePolicy: CachePolicy,

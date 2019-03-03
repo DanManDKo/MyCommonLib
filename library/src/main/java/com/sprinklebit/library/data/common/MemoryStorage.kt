@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit
  * User: Sasha Shcherbinin
  * Date: 2/25/18
  */
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 open class MemoryStorage<Query, Entity>(max: Int,
                                         private val cachePolicy: CachePolicy,
                                         private val fetcher: ((Query) -> Single<Entity>)?) {
@@ -60,7 +61,6 @@ open class MemoryStorage<Query, Entity>(max: Int,
                 .ignoreElement()
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
     fun refresh(query: Query): Completable {
         if (fetcher != null) {
             var observable: Observable<Entity>? = fetchMap[query]

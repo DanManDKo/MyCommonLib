@@ -13,6 +13,7 @@ import timber.log.Timber
  * PersonalInfo: Sasha Shcherbinin
  * Date: 12/28/17
  */
+@Suppress("unused")
 class PreferenceStorage {
 
     constructor(context: Context, name: String) {
