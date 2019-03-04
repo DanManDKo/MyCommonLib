@@ -9,7 +9,7 @@ class CachePolicy private constructor(private val time: Int, private val timeUni
 
     override fun test(entry: Cache): Boolean {
         val currentTime = getTime()
-        return currentTime - entry.createTime < timeUnit.toMillis(time.toLong())
+        return currentTime - entry.getCreateTime() < timeUnit.toMillis(time.toLong())
     }
 
     companion object {
