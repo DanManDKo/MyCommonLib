@@ -42,7 +42,7 @@ class Page<T>(var hasNext: Boolean = false,
 
     fun clean() {
         dataList.clear()
-        page = 0
+        page = 1
     }
 
     fun size(): Int {
