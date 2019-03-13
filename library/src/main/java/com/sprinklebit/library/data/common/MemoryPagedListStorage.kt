@@ -161,7 +161,6 @@ private constructor(max: Int,
     }
 
     class Builder<Query, Entity>(
-            private val key: (Entity) -> Any,
             private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)
     ) {
 
