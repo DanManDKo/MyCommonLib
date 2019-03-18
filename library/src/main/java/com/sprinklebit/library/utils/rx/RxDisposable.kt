@@ -10,6 +10,7 @@ import io.reactivex.disposables.Disposable
  * PersonalInfo: Sasha Shcherbinin
  * Date: 8/20/17
  */
+@Suppress("unused")
 object RxDisposable {
 
     private val sSubscriptions = HashMap<Any, SpecificCompositeDisposable>()
