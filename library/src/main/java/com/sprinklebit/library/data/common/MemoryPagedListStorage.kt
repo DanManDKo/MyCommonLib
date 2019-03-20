@@ -33,7 +33,7 @@ private constructor(max: Int,
         val objectObservable = cache[query]
                 .filter { cachePolicy.test(it) }
                 .map<Page<Entity>> { it.entry }
-                .map<PageBundle<Entity>> { PageBundle(it.getDataList(), it.hasNext, it.maxCount) }
+                .map<PageBundle<Entity>> { PageBundle(ArrayList(it.getDataList()), it.hasNext, it.maxCount) }
                 .toObservable()
         return objectObservable.repeatWhen { updateSubject.filter { q -> query == q } }
                 .mergeWith(fetchIfExpired(query))

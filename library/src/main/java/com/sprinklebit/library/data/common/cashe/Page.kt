@@ -8,9 +8,8 @@ import java.util.*
  * Date: 10/17/17
  * Time: 4:39 PM
  */
-
-class Page<T>(var hasNext: Boolean = false,
-              var maxCount: Int = 0) {
+data class Page<T>(var hasNext: Boolean = false,
+                   var maxCount: Int = 0) {
 
     private var dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
 
