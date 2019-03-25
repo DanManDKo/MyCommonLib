@@ -11,6 +11,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 /**
  * Created with Android Studio.
@@ -22,7 +23,8 @@ class MemoryPagedListStorage<Query, Entity>
 private constructor(max: Int,
                     private val limit: Int,
                     private val cachePolicy: CachePolicy,
-                    private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>)) {
+                    private val fetcher: ((Params<Query, Entity>) -> Single<FetchResult<Entity>>),
+                    private val errors: Array<KClass<out Throwable>>?) {
 
     private val cache: ObservableLruCache<Query, CachedEntry<Page<Entity>>> = ObservableLruCache(max)
 
@@ -33,7 +35,14 @@ private constructor(max: Int,
         val objectObservable = cache[query]
                 .filter { cachePolicy.test(it) }
                 .map<Page<Entity>> { it.entry }
-                .map<PageBundle<Entity>> { PageBundle(ArrayList(it.getDataList()), it.hasNext, it.maxCount) }
+                .map<PageBundle<Entity>> {
+                    PageBundle(
+                            ArrayList(it.getDataList()),
+                            it.hasNext,
+                            it.maxCount,
+                            it.error
+                    )
+                }
                 .toObservable()
         return objectObservable.repeatWhen { updateSubject.filter { q -> query == q } }
                 .mergeWith(fetchIfExpired(query))
@@ -138,7 +147,19 @@ private constructor(max: Int,
                                     cache.put(query, CachePolicy.createEntry(page))
                                     updateSubject.onNext(query)
                                 }
-                                .toObservable()
+                                .ignoreElement()
+                                .onErrorComplete {
+                                    if (errors?.contains(it::class) == true) {
+                                        val newPage = Page<Entity>(false, 0)
+                                        newPage.error = it
+                                        cache.put(query, CachePolicy.createEntry(newPage))
+                                        updateSubject.onNext(query)
+                                        true
+                                    } else {
+                                        false
+                                    }
+                                }
+                                .toObservable<Any>()
                     }
             observable = observable!!
                     .doOnTerminate { fetchMap.remove(query) }
@@ -167,6 +188,7 @@ private constructor(max: Int,
         private var max = 50
         private var limit = 10
         private var cachePolicy: CachePolicy? = null
+        private var errors: Array<KClass<out Throwable>>? = null
 
         fun capacity(max: Int): Builder<Query, Entity> {
             this.max = max
@@ -183,6 +205,11 @@ private constructor(max: Int,
             return this
         }
 
+        fun allowableErrors(errors: Array<KClass<out Throwable>>): Builder<Query, Entity> {
+            this.errors = errors
+            return this
+        }
+
         fun build(): MemoryPagedListStorage<Query, Entity> {
             if (cachePolicy == null) {
                 cachePolicy = CachePolicy.infinite()
@@ -191,7 +218,8 @@ private constructor(max: Int,
                     max,
                     limit,
                     cachePolicy!!,
-                    fetcher)
+                    fetcher,
+                    errors)
         }
     }
 

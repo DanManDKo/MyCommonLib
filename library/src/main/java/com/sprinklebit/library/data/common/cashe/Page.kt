@@ -14,6 +14,7 @@ data class Page<T>(var hasNext: Boolean = false,
     private var dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
 
     var page: Int = 1
+    var error: Throwable? = null
 
     val lastObject: T?
         get() = if (dataList.size > 0) dataList[dataList.size - 1] else null
