@@ -74,15 +74,15 @@ private constructor(capacity: Int,
                         page.addResult(newList.data)
                         page.hasNext = newList.hasNext
                         page.maxCount = newList.maxCount
-                        mapBeforeUpdate?.invoke(page.getDataList())
+                        mapBeforeUpdate?.invoke(page.dataList)
                         cache.put(query, CachePolicy.createEntry(page))
                     }
                     if (page.maxCount > 0) {
-                        callback.onResult(ArrayList(page.getDataList()), 0, page.maxCount,
+                        callback.onResult(ArrayList(page.dataList), 0, page.maxCount,
                                 null,
                                 if (page.hasNext) page else null)
                     } else {
-                        callback.onResult(ArrayList(page.getDataList()), null,
+                        callback.onResult(ArrayList(page.dataList), null,
                                 if (page.hasNext) page else null)
                     }
                     if (!page.hasNext && loadingWasShown) {
@@ -118,7 +118,7 @@ private constructor(capacity: Int,
                     page.addResult(newList.data)
                     page.hasNext = newList.hasNext
                     page.maxCount = newList.maxCount
-                    mapBeforeUpdate?.invoke(page.getDataList())
+                    mapBeforeUpdate?.invoke(page.dataList)
                     cache.put(query, CachePolicy.createEntry(page))
 
                     if (!page.hasNext) {
@@ -166,7 +166,8 @@ private constructor(capacity: Int,
         return fetcher.invoke(Params(query, limit = initialLoadSizeHint))
                 .doOnSuccess {
                     cache.clear()
-                    val page = Page<Entity>(it.hasNext, it.maxCount)
+                    val page = Page<Entity>(it.hasNext)
+                    page.maxCount = it.maxCount
                     mapBeforeUpdate?.invoke(it.data)
                     page.addResult(it.data)
                     cache.put(query, CachePolicy.createEntry(page))
@@ -183,8 +184,8 @@ private constructor(capacity: Int,
                     Completable.fromAction {
                         val page = cacheEntity.value.entry
                         var changed = false
-                        for (index in 0 until page.getDataList().size) {
-                            val entity = page.getDataList()[index]
+                        for (index in 0 until page.dataList.size) {
+                            val entity = page.dataList[index]
                             if (filter.invoke(entity)) {
                                 val newEntity = onUpdateCallback.invoke(entity)
                                 page.replace(index, newEntity)
@@ -192,7 +193,7 @@ private constructor(capacity: Int,
                             }
                         }
                         if (changed) {
-                            mapBeforeUpdate?.invoke(page.getDataList())
+                            mapBeforeUpdate?.invoke(page.dataList)
                             cache.put(cacheEntity.key, CachePolicy.createEntry(page))
                             updateSubject.onNext(cacheEntity.key)
                         }
@@ -220,15 +221,15 @@ private constructor(capacity: Int,
         return Completable.fromAction {
             val page = cacheEntity.entry
             var changed = false
-            for (index in page.getDataList().size - 1 downTo 0) {
-                val entity = page.getDataList()[index]
+            for (index in page.dataList.size - 1 downTo 0) {
+                val entity = page.dataList[index]
                 if (filter.invoke(entity)) {
                     page.remove(index)
                     changed = true
                 }
             }
             if (changed) {
-                mapBeforeUpdate?.invoke(page.getDataList())
+                mapBeforeUpdate?.invoke(page.dataList)
                 cache.put(query, CachePolicy.createEntry(page))
                 updateSubject.onNext(query)
             }

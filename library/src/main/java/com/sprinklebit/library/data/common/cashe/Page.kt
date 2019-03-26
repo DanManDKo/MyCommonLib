@@ -8,20 +8,15 @@ import java.util.*
  * Date: 10/17/17
  * Time: 4:39 PM
  */
-data class Page<T>(var hasNext: Boolean = false,
-                   var maxCount: Int = 0) {
+class Page<T>(var hasNext: Boolean = false) {
 
-    private var dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
-
-    var page: Int = 1
-    var error: Throwable? = null
-
+    val dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
     val lastObject: T?
         get() = if (dataList.size > 0) dataList[dataList.size - 1] else null
-
-    fun getDataList(): List<T> {
-        return dataList
-    }
+    var page: Int = 1
+        private set
+    var error: Throwable? = null
+    var maxCount: Int = 0
 
     fun replace(index: Int, entity: T) {
         synchronized(dataList) {
@@ -42,6 +37,7 @@ data class Page<T>(var hasNext: Boolean = false,
 
     fun clean() {
         dataList.clear()
+        error = null
         page = 1
     }
 

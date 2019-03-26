@@ -37,7 +37,7 @@ private constructor(max: Int,
                 .map<Page<Entity>> { it.entry }
                 .map<PageBundle<Entity>> {
                     PageBundle(
-                            ArrayList(it.getDataList()),
+                            ArrayList(it.dataList),
                             it.hasNext,
                             it.maxCount,
                             it.error
@@ -56,8 +56,8 @@ private constructor(max: Int,
                     Completable.fromAction {
                         val page = cacheEntity.value.entry
                         var changed = false
-                        for (index in 0 until page.getDataList().size) {
-                            val entity = page.getDataList()[index]
+                        for (index in 0 until page.dataList.size) {
+                            val entity = page.dataList[index]
                             if (filter.invoke(entity)) {
                                 val newEntity = onUpdateCallback.invoke(entity)
                                 page.replace(index, newEntity)
@@ -92,8 +92,8 @@ private constructor(max: Int,
         return Completable.fromAction {
             val page = cacheEntity.entry
             var changed = false
-            for (index in page.getDataList().size - 1 downTo 0) {
-                val entity = page.getDataList()[index]
+            for (index in page.dataList.size - 1 downTo 0) {
+                val entity = page.dataList[index]
                 if (filter.invoke(entity)) {
                     page.remove(index)
                     changed = true
@@ -144,13 +144,14 @@ private constructor(max: Int,
                                     page.addResult(result.data)
                                     page.hasNext = result.hasNext
                                     page.maxCount = result.maxCount
+                                    page.error = null
                                     cache.put(query, CachePolicy.createEntry(page))
                                     updateSubject.onNext(query)
                                 }
                                 .ignoreElement()
                                 .onErrorComplete {
                                     if (errors?.contains(it::class) == true) {
-                                        val newPage = Page<Entity>(false, 0)
+                                        val newPage = Page<Entity>(false)
                                         newPage.error = it
                                         cache.put(query, CachePolicy.createEntry(newPage))
                                         updateSubject.onNext(query)
