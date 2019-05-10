@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
+import timber.log.Timber
 
 /**
  * Drawable decorator which draws the target drawable similarly to an ImageView with scaleType=centerCrop
@@ -55,11 +56,15 @@ class CenterCropDrawable : Drawable {
     }
 
     override fun draw(canvas: Canvas) {
-        if (target == null) return
-        canvas.save()
-        canvas.clipRect(bounds)
-        target!!.draw(canvas)
-        canvas.restore()
+        try {
+            if (target == null) return
+            canvas.save()
+            canvas.clipRect(bounds)
+            target!!.draw(canvas)
+            canvas.restore()
+        } catch(e: Throwable) {
+            Timber.e(e)
+        }
     }
 
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
