@@ -68,7 +68,7 @@ public class LoadingAdapter extends RecyclerViewAdapterWrapper {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_TYPE_LOADING) {
             ItemLoadingBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                    R.layout.item_loading, parent, false);
+                    R.layout.item_loading_vertical, parent, false);
             return new LoadingViewHolder(binding);
         } else {
             return wrapped.onCreateViewHolder(parent, viewType);

@@ -15,8 +15,8 @@ import kotlin.collections.ArrayList
  * PersonalInfo: Sasha Shcherbinin
  * Date: 10/31/17
  */
-class DiffData<Type>(private val recyclerView: androidx.recyclerview.widget.RecyclerView,
-                     private val adapter: androidx.recyclerview.widget.RecyclerView.Adapter<*>,
+class DiffData<Type>(private val recyclerView: RecyclerView,
+                     private val adapter: RecyclerView.Adapter<*>,
                      private val isItemTheSame: (Type, Type) -> Boolean) {
 
     private var data: List<Type> = Collections.emptyList()
@@ -30,8 +30,8 @@ class DiffData<Type>(private val recyclerView: androidx.recyclerview.widget.Recy
         if (data.isNotEmpty() && newData.size > 1) {
             val oldData = data
             var clipTop = true
-            if (recyclerView.layoutManager is androidx.recyclerview.widget.LinearLayoutManager) {
-                val layoutManager = recyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager
+            if (recyclerView.layoutManager is LinearLayoutManager) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 clipTop = !layoutManager.reverseLayout
             }
             val offset = recyclerView.computeVerticalScrollOffset()

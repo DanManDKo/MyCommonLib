@@ -48,10 +48,7 @@ object RxDisposable {
 
     @JvmStatic
     fun unsubscribe(tag: Any, subscriptionTab: Any) {
-        val subscriptions = sSubscriptions.get(tag)
-        if (subscriptions != null) {
-            subscriptions.dispose(subscriptionTab)
-        }
+        sSubscriptions[tag]?.dispose(subscriptionTab)
     }
 
     private class SpecificCompositeDisposable {

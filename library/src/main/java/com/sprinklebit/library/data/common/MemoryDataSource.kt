@@ -20,6 +20,7 @@ import io.reactivex.subjects.ReplaySubject
  * User: Sasha Shcherbinin
  * Date: 2/25/18
  */
+@Deprecated("Use memory PagedListStorage")
 class MemoryDataSource<Query, Entity>
 private constructor(capacity: Int,
                     private val limit: Int,
