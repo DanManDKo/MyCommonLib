@@ -1,4 +1,4 @@
-package com.sprinklebit.library.presentation.utils.extention
+package com.sprinklebit.library.presentation.utils.extension
 
 import com.sprinklebit.library.presentation.common.error.ErrorHandler
 import com.sprinklebit.library.presentation.common.livedata.SingleLiveEvent
