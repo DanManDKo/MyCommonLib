@@ -1,4 +1,4 @@
-package com.sprinklebit.library.presentation.common.adapter
+package com.sprinkle.brokerage.presentation.feature.dashboard.portfolio.info
 
 import android.util.SparseArray
 import android.view.View
@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.sprinklebit.library.presentation.common.adapter.RecyclerViewAdapterWrapper
 
 /**
  * Created with Android Studio.
@@ -75,15 +76,15 @@ class HeaderFooterAdapter(targetAdapter: RecyclerView.Adapter<out RecyclerView.V
 
         val indexOf = headerViewDelegates.indexOfValue(viewDelegate as ViewDelegate<ViewHolder>)
         if (indexOf >= 0) {
-            removeHeaderView(indexOf)
+            removeHeaderView(headerViewDelegates.keyAt(indexOf))
         }
     }
 
     fun removeHeaderView(position: Int) {
-        val valueAt = headerViewDelegates.valueAt(position)
-        if (valueAt != null) {
-            valueAt.setAdapter(null)
-            headerViewDelegates.removeAt(position)
+        val value = headerViewDelegates.get(position)
+        if (value != null) {
+            value.setAdapter(null)
+            headerViewDelegates.remove(position)
             notifyItemRemoved(position)
         }
     }
