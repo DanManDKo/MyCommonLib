@@ -1,4 +1,4 @@
-package com.sprinkle.brokerage.presentation.feature.dashboard.portfolio.info
+package com.sprinklebit.library.presentation.common.adapter
 
 import android.util.SparseArray
 import android.view.View
@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.sprinklebit.library.presentation.common.adapter.RecyclerViewAdapterWrapper
 
 /**
  * Created with Android Studio.
