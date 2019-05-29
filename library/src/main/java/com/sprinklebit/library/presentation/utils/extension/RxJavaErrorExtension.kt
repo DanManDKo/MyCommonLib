@@ -23,6 +23,17 @@ fun <T> Observable<T>.defaultDoOnError(
     }
 }
 
+fun <T> Single<T>.defaultDoOnError(
+        errorHandler: ErrorHandler,
+        errorMessage: SingleLiveEvent<String>
+): Single<T> {
+    return this.doOnError { error ->
+        errorHandler.handleError(error) { message ->
+            errorMessage.value = message
+        }
+    }
+}
+
 fun Completable.defaultDoOnError(
         errorHandler: ErrorHandler,
         errorMessage: SingleLiveEvent<String>
