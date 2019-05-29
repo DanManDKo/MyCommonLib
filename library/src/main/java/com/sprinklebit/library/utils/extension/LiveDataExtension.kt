@@ -1,4 +1,4 @@
-package com.sprinklebit.library.utils.extention
+package com.sprinklebit.library.utils.extension
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

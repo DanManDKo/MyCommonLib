@@ -1,4 +1,4 @@
-package com.sprinklebit.library.utils.extention
+package com.sprinklebit.library.utils.extension
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
