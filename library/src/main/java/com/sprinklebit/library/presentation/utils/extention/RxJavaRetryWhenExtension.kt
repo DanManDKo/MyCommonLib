@@ -1,4 +1,4 @@
-package com.sprinklebit.library.presentation.utils.extentions
+package com.sprinklebit.library.presentation.utils.extention
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
