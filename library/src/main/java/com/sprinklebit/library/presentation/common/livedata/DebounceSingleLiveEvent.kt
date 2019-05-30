@@ -9,26 +9,28 @@ import androidx.lifecycle.Observer
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
-/**
- * PersonalInfo: Sasha Shcherbinin
- * Date : 4/13/18
- * A lifecycle-aware observable that sends only new updates after subscription, used for events like
- * navigation and Snackbar messages.
- *
- *
- * This avoids a common problem with events: on configuration change (like rotation) an update
- * can be emitted if the innerObserver is active. This LiveData only calls the observable if there's an
- * explicit call to setValue() or call().
- *
- *
- * Note that only one innerObserver is going to be notified of changes.
- */
-class DebounceSingleLiveEvent<T> : MutableLiveData<T>() {
+class DebounceSingleLiveEvent<T>constructor(millisInFuture: Long, liveData: LiveData<*>)
+    : MutableLiveData<T>() {
 
     private val newValue: T? = null
     private val pending = AtomicBoolean(false)
 
     private lateinit var timer: CountDownTimer
+
+    init {
+        liveData.observeForever {
+            timer.cancel()
+        }
+        timer = object : CountDownTimer(millisInFuture, Long.MAX_VALUE) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                setSuperValue(newValue)
+            }
+
+        }
+    }
 
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
@@ -42,21 +44,6 @@ class DebounceSingleLiveEvent<T> : MutableLiveData<T>() {
                 observer.onChanged(it)
             }
         })
-    }
-
-    fun debounce(millisInFuture: Long, liveData: LiveData<*>) {
-        liveData.observeForever {
-            timer.cancel()
-        }
-        timer = object : CountDownTimer(millisInFuture, Long.MAX_VALUE) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-            override fun onFinish() {
-                setSuperValue(newValue)
-            }
-
-        }
     }
 
     @MainThread
