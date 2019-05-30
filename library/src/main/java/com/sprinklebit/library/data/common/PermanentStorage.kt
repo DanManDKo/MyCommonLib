@@ -10,11 +10,6 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-/**
- * Created with Android Studio.
- * User: Sasha Shcherbinin
- * Date: 9/25/18
- */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class PermanentStorage<Query, Entity>
 private constructor(max: Int,
@@ -38,11 +33,13 @@ private constructor(max: Int,
         var observable: Observable<Entity>? = fetchMap[query]
         if (observable == null) {
             observable = fetcher.invoke(query)
+                    .subscribeOn(Schedulers.io())
                     .toObservable()
                     .doOnNext { cacheInfo.put(query, CachePolicy.createEntry()) }
-                    .flatMap { permanent.write(query, it).toObservable<Entity>() }
+                    .flatMapCompletable { permanent.write(query, it) }
                     .doOnTerminate { fetchMap.remove(query) }
                     .doOnDispose { fetchMap.remove(query) }
+                    .toObservable<Entity>()
                     .publish()
                     .refCount()
         }
@@ -61,7 +58,6 @@ private constructor(max: Int,
                 .map { cachedEntry -> !cachePolicy.test(cachedEntry) }
                 .toSingle(true)
                 .filter { expired -> expired }
-                .observeOn(Schedulers.io())
                 .flatMapCompletable { refresh(query) }
                 .toObservable()
     }
