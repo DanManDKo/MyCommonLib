@@ -8,15 +8,15 @@ import com.sprinklebit.library.R
 import timber.log.Timber
 
 @Suppress("unused")
-class LoadingAdapter(adapter: RecyclerView.Adapter<*>, private val threshold: Int = 5,
-                     loadMoreListener: (() -> Any)? = null) : RecyclerViewAdapterWrapper(adapter) {
+class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
+                     private val threshold: Int = 5,
+                     loadMoreListener: (() -> Any)? = null)
+    : RecyclerViewAdapterWrapper(adapter) {
 
     private var loadMoreListener: LoadMoreListener? = null
     private var isHorizontal = false
 
-    private var hasNextWasSet = false
-
-    private var loading = true
+    private var loading = false
     private var hasNext = true
 
     private val loadingPosition: Int
@@ -48,17 +48,18 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>, private val threshold: In
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (wrappedAdapter.itemCount == itemCount) {
-                    if (hasNext) {
-                        notifyItemRemoved(0)
-                    }
-                    notifyItemRangeInserted(positionStart, itemCount)
-                    if (hasNext) {
-                        notifyItemInserted(loadingPosition)
-                    }
-                } else {
-                    notifyItemRangeInserted(positionStart, itemCount)
-                }
+//                if (wrappedAdapter.itemCount == itemCount) {
+//                    if (hasNext) {
+//                        notifyItemRemoved(0)
+//                    }
+//                    notifyItemRangeInserted(positionStart, itemCount)
+//                    if (hasNext) {
+//                        notifyItemInserted(loadingPosition)
+//                    }
+//                } else {
+//                    notifyItemRangeInserted(positionStart, itemCount)
+//                }
+                notifyItemRangeInserted(positionStart, itemCount)
             }
 
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
@@ -89,7 +90,10 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>, private val threshold: In
         if (holder !is LoadingViewHolder) {
             wrappedAdapter.onBindViewHolder(holder, position)
         }
-        if (!loading && hasNext && loadingPosition - threshold <= position) {
+        if (hasWrappedItems() &&
+                !loading &&
+                hasNext &&
+                loadingPosition - threshold <= position) {
             loadMore()
         }
     }
@@ -100,6 +104,10 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>, private val threshold: In
         } else {
             wrappedAdapter.getItemViewType(position)
         }
+    }
+
+    private fun hasWrappedItems(): Boolean {
+        return wrappedAdapter.itemCount > 0
     }
 
     override fun getItemCount(): Int {
@@ -172,9 +180,6 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>, private val threshold: In
 
     @Suppress("unused")
     fun setHasNext(hasNext: Boolean) {
-        if (!hasNextWasSet) loading = false
-        hasNextWasSet = true
-
         try {
             if (hasNext) {
                 val add = !this.hasNext
@@ -196,19 +201,8 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>, private val threshold: In
 
     @Suppress("unused")
     fun reset() {
-        if (this.loading && hasNext && !hasNextWasSet) return
-
-        val add = !this.hasNext
-
-        loading = true
+        if (hasNext) return
         hasNext = true
-        hasNextWasSet = false
-
-        if (add) {
-            notifyItemInserted(loadingPosition)
-        } else {
-            notifyItemChanged(loadingPosition)
-        }
     }
 
     interface LoadMoreListener {
