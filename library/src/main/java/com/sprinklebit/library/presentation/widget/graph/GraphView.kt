@@ -36,7 +36,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
     private lateinit var markerView: GraphMarkerView
 
     var yValueFormatter: ((value: Float) -> String)? = null
-    var valueSelectedListener: ValueSelectedListener? = null
+    var valueSelectedListener: ((point: ChartPoint?) -> Unit)? = null
 
     init {
         val a = context
@@ -218,22 +218,17 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         invalidate()
     }
 
-    fun setSelectedListener(selectedListener: ValueSelectedListener) {
-        this.valueSelectedListener = selectedListener
+    fun setSelectedListener(listener: ((point: ChartPoint?) -> Unit)?) {
+        this.valueSelectedListener =  listener
         this.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onNothingSelected() {
-                valueSelectedListener?.onNothingSelected()
+                valueSelectedListener?.invoke(null)
             }
 
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                valueSelectedListener?.onValueSelected(e?.data as ChartPoint, h)
+                valueSelectedListener?.invoke(e?.data as ChartPoint)
             }
         })
-    }
-
-    interface ValueSelectedListener {
-        fun onValueSelected(e: ChartPoint, h: Highlight?)
-        fun onNothingSelected()
     }
 
 }
