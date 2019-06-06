@@ -7,9 +7,12 @@ import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.sprinklebit.library.R
 import com.sprinklebit.library.domain.model.ChartPoint
 import com.sprinklebit.library.utils.SizeUtils
@@ -28,11 +31,12 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
     private val isXValuesEnabled: Boolean
     private val isRightAxisEnabled: Boolean
     private val isAnimate: Boolean
-    private val fillDrawable: Drawable?
+    private var fillDrawable: Drawable?
     private val lineWidth: Int
     private lateinit var markerView: GraphMarkerView
 
     var yValueFormatter: ((value: Float) -> String)? = null
+    var valueSelectedListener: ((point: ChartPoint?) -> Unit)? = null
 
     init {
         val a = context
@@ -179,6 +183,24 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         return false
     }
 
+    fun getFirstEntry(): ChartPoint? {
+        return if (this.lineData.dataSetCount > 0 &&
+                this.lineData.getDataSetByIndex(0).entryCount > 0) {
+            this.lineData.getDataSetByIndex(0).getEntryForIndex(0).data as ChartPoint
+        } else {
+            null
+        }
+    }
+
+    fun resetHighlight() {
+        this.highlightValue(null)
+    }
+
+    fun setMarkerValueFormatter(valueFormatter: ((value: Float) -> String)?){
+        markerView.valueFormatter = valueFormatter
+    }
+
+
     fun setLineColor(lineColor: Int) {
         this.lineColor = lineColor
         invalidate()
@@ -188,5 +210,25 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         return -1f
     }
 
+
     private fun getFillDrawable(): Drawable? = fillDrawable
+
+    fun setFillDrawable(drawable: Drawable?) {
+        this.fillDrawable = drawable
+        invalidate()
+    }
+
+    fun setSelectedListener(listener: ((point: ChartPoint?) -> Unit)?) {
+        this.valueSelectedListener =  listener
+        this.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onNothingSelected() {
+                valueSelectedListener?.invoke(null)
+            }
+
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                valueSelectedListener?.invoke(e?.data as ChartPoint)
+            }
+        })
+    }
+
 }

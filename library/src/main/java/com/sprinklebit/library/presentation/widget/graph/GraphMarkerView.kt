@@ -24,12 +24,14 @@ class GraphMarkerView(context: Context) : MarkerView(context, R.layout.new_chart
     private val dateValueTv: TextView = findViewById(R.id.dateValueTv)
     private val marker: View = findViewById(R.id.marker)
 
+    var valueFormatter: ((value: Float) -> String)? = null
+
     private val timeFormatter = DateFormat
             .getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         val (timestamp, value) = e!!.data as ChartPoint
-        contentValueTv.text = value.toString()
+        contentValueTv.text = valueFormatter?.invoke(value)
         dateValueTv.text = getFormattedDate(Date(timestamp))
         super.refreshContent(e, highlight)
     }
