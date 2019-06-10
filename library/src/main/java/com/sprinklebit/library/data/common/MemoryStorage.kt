@@ -50,9 +50,12 @@ open class MemoryStorage<Query, Entity>(max: Int,
         }
     }
 
-    fun update(query: Query, onUpdateCallback: (Entity) -> Entity): Completable {
+    fun update(query: Query,
+               filter: ((Entity) -> Boolean)? = null,
+               onUpdateCallback: (Entity) -> Entity): Completable {
         return cache[query]
                 .map<Entity> { it.entry }
+                .apply { if (filter != null) this.filter(filter) }
                 .doOnSuccess { entity ->
                     val newEntity = onUpdateCallback.invoke(entity)
                     cache.put(query, CachePolicy.createEntry(newEntity))
