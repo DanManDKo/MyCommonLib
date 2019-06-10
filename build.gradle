@@ -26,7 +26,7 @@ allprojects {
 ext {
     retrofitVersion = '2.3.0'
     okhttp3Version = '3.9.1'
-    glideVersion = '4.8.0'
+    glideVersion = '4.9.0'
     dagger_version = '2.16'
     pagingVersion = '1.0.1'
 }
