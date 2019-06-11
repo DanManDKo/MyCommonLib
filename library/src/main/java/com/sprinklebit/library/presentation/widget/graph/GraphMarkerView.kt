@@ -16,7 +16,7 @@ import java.util.*
 class GraphMarkerView(context: Context) : MarkerView(context, R.layout.new_chart_marker) {
 
     private val mOffset2 = MPPointF()
-    private val rightOffset = SizeUtils.convertDpToPixel(100f, context)
+    private val rightOffset = SizeUtils.convertDpToPixel(50f, context)
 
     companion object {
         const val EXTRA_OFFSET = 10
