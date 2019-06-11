@@ -21,16 +21,11 @@ import java.util.*
 class GraphView(context: Context, attrs: AttributeSet? = null)
     : TouchedLineChart(context, attrs) {
 
-    companion object {
-        private const val X_ANIMATION_DURATION = 1000
-    }
-
     private var points: List<ChartPoint>? = null
     private val gridColor: Int
     private var lineColor: Int
     private val isXValuesEnabled: Boolean
     private val isRightAxisEnabled: Boolean
-    private val isAnimate: Boolean
     private var fillDrawable: Drawable?
     private val lineWidth: Int
     private lateinit var markerView: GraphMarkerView
@@ -43,7 +38,6 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
                 .obtainStyledAttributes(attrs, R.styleable.GraphView, 0, 0)
         val backgroundResourceId = a.getColor(R.styleable.GraphView_android_background, Color.TRANSPARENT)
         gridColor = a.getColor(R.styleable.GraphView_gv_gridColor, Color.WHITE)
-        isAnimate = a.getBoolean(R.styleable.GraphView_gv_isAnimate, false)
         fillDrawable = ContextCompat.getDrawable(
                 context,
                 a.getResourceId(R.styleable.GraphView_gv_fillDrawable, -1)
@@ -126,9 +120,6 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         xAxis.setDrawLabels(isXValuesEnabled)
 
         setViewPortOffset()
-        if (isAnimate && points.size > 30) {
-            this.animateX(X_ANIMATION_DURATION)
-        }
         this.invalidate()
 
 
@@ -200,7 +191,6 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         markerView.valueFormatter = valueFormatter
     }
 
-
     fun setLineColor(lineColor: Int) {
         this.lineColor = lineColor
         invalidate()
@@ -209,7 +199,6 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
     private fun getMinVisibleXRange(): Float {
         return -1f
     }
-
 
     private fun getFillDrawable(): Drawable? = fillDrawable
 

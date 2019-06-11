@@ -15,7 +15,6 @@
         <attr name="android:background" />
         <attr name="gv_gridColor" format="reference" />
         <attr name="gv_isXValuesEnabled" format="boolean" />
-        <attr name="gv_isAnimate" format="boolean" />
         <attr name="gv_isRightAxisEnabled" format="boolean" />
         <attr name="gv_rightAxisMinimum" format="float" />
         <attr name="gv_rightAxisMaximum" format="float" />

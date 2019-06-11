@@ -9,12 +9,14 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.sprinklebit.library.R
 import com.sprinklebit.library.domain.model.ChartPoint
+import com.sprinklebit.library.utils.SizeUtils
 import java.text.DateFormat
 import java.util.*
 
 class GraphMarkerView(context: Context) : MarkerView(context, R.layout.new_chart_marker) {
 
     private val mOffset2 = MPPointF()
+    private val rightOffset = SizeUtils.convertDpToPixel(100f, context)
 
     companion object {
         const val EXTRA_OFFSET = 10
@@ -37,8 +39,7 @@ class GraphMarkerView(context: Context) : MarkerView(context, R.layout.new_chart
     }
 
     override fun getOffsetForDrawingAtPoint(posX: Float, posY: Float): MPPointF {
-        mOffset2.x = -marker.width / 2f
-
+        mOffset2.x = if (rightOffset > marker.width) -marker.width / 2f else - rightOffset
         mOffset2.y = -posY + EXTRA_OFFSET
 
         val chart = chartView
