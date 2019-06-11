@@ -1,34 +1,20 @@
 package com.sprinklebit.library.presentation.common.livedata
 
-import android.os.CountDownTimer
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
-class DebounceSingleLiveEvent<T>constructor(millisInFuture: Long, liveData: LiveData<*>)
-    : MutableLiveData<T>() {
+class DebounceSingleLiveEvent<T> constructor(millisInFuture: Long, liveData: LiveData<*>)
+    : DebounceMutableLiveData<T>(millisInFuture) {
 
-    private val newValue: T? = null
     private val pending = AtomicBoolean(false)
-
-    private lateinit var timer: CountDownTimer
 
     init {
         liveData.observeForever {
             timer.cancel()
-        }
-        timer = object : CountDownTimer(millisInFuture, Long.MAX_VALUE) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-            override fun onFinish() {
-                setSuperValue(newValue)
-            }
-
         }
     }
 
@@ -47,15 +33,9 @@ class DebounceSingleLiveEvent<T>constructor(millisInFuture: Long, liveData: Live
     }
 
     @MainThread
-    private fun setSuperValue(t: T?) {
-        super.setValue(t)
-    }
-
-    @MainThread
     override fun setValue(t: T?) {
+        super.setValue(t)
         pending.set(true)
-        timer.cancel()
-        timer.start()
     }
 
     /**

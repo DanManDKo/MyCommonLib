@@ -4,11 +4,15 @@ import android.os.CountDownTimer
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 
-class DebounceMutableLiveData<T>(millis: Long) : MutableLiveData<T>() {
+open class DebounceMutableLiveData<T>(millis: Long) : MutableLiveData<T>() {
+
+    companion object {
+        var ignoreTimer = false
+    }
 
     private var newValue: T? = null
 
-    private var timer = object : CountDownTimer(millis, Long.MAX_VALUE) {
+    protected var timer = object : CountDownTimer(millis, Long.MAX_VALUE) {
         override fun onTick(millisUntilFinished: Long) {
         }
 
@@ -25,8 +29,12 @@ class DebounceMutableLiveData<T>(millis: Long) : MutableLiveData<T>() {
     @MainThread
     override fun setValue(t: T?) {
         newValue = t
-        timer.cancel()
-        timer.start()
+        if (ignoreTimer) {
+            setSuperValue(newValue)
+        } else {
+            timer.cancel()
+            timer.start()
+        }
     }
 
 }
