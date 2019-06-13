@@ -16,6 +16,7 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
     private var loadMoreListener: LoadMoreListener? = null
     private var isHorizontal = false
 
+    private var firstTime = true
     private var loading = false
     private var hasNext = true
 
@@ -48,17 +49,17 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                if (wrappedAdapter.itemCount == itemCount) {
-//                    if (hasNext) {
-//                        notifyItemRemoved(0)
-//                    }
-//                    notifyItemRangeInserted(positionStart, itemCount)
-//                    if (hasNext) {
-//                        notifyItemInserted(loadingPosition)
-//                    }
-//                } else {
-//                    notifyItemRangeInserted(positionStart, itemCount)
-//                }
+                if (wrappedAdapter.itemCount == itemCount) {
+                    if (hasNext) {
+                        notifyItemRemoved(0)
+                    }
+                    notifyItemRangeInserted(positionStart, itemCount)
+                    if (hasNext) {
+                        notifyItemInserted(loadingPosition)
+                    }
+                } else {
+                    notifyItemRangeInserted(positionStart, itemCount)
+                }
                 notifyItemRangeInserted(positionStart, itemCount)
             }
 
@@ -90,7 +91,7 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
         if (holder !is LoadingViewHolder) {
             wrappedAdapter.onBindViewHolder(holder, position)
         }
-        if (hasWrappedItems() &&
+        if (!firstTime &&
                 !loading &&
                 hasNext &&
                 loadingPosition - threshold <= position) {
@@ -142,6 +143,7 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
 
     @Deprecated("use setLoading and setHasNext")
     fun updateLoading(hasNext: Boolean) {
+        firstTime = false
         try {
             if (hasNext) {
                 resetLoading()
@@ -201,7 +203,8 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
 
     @Suppress("unused")
     fun reset() {
-        if (hasNext) return
+        firstTime = true
+        loading = false
         hasNext = true
     }
 

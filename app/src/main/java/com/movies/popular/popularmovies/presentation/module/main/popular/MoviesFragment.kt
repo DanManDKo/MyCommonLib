@@ -1,19 +1,18 @@
 package com.movies.popular.popularmovies.presentation.module.main.popular
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.movies.popular.popularmovies.R
 import com.movies.popular.popularmovies.databinding.FragmentMoviesBinding
 import com.movies.popular.popularmovies.presentation.common.BaseFragment
-import com.movies.popular.popularmovies.presentation.common.adapter.LoadingAdapter
 import com.movies.popular.popularmovies.presentation.common.helper.UiHelper
+import com.sprinklebit.library.presentation.common.adapter.LoadingAdapter
 import javax.inject.Inject
 
 /**
