@@ -49,18 +49,13 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (wrappedAdapter.itemCount == itemCount) {
-                    if (hasNext) {
-                        notifyItemRemoved(0)
-                    }
-                    notifyItemRangeInserted(positionStart, itemCount)
-                    if (hasNext) {
-                        notifyItemInserted(loadingPosition)
-                    }
-                } else {
-                    notifyItemRangeInserted(positionStart, itemCount)
+                if (hasNext) {
+                    notifyItemRemoved(loadingPosition)
                 }
                 notifyItemRangeInserted(positionStart, itemCount)
+                if (hasNext) {
+                    notifyItemInserted(loadingPosition)
+                }
             }
 
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
@@ -182,6 +177,7 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
 
     @Suppress("unused")
     fun setHasNext(hasNext: Boolean) {
+        firstTime = false
         try {
             if (hasNext) {
                 val add = !this.hasNext
