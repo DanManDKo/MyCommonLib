@@ -29,13 +29,6 @@ internal class DiffData<Type>(private val recyclerView: RecyclerView,
     fun updateData(newData: List<Type>) {
         if (data.isNotEmpty() && newData.size > 1) {
             val oldData = data
-            var clipTop = true
-            if (recyclerView.layoutManager is LinearLayoutManager) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                clipTop = !layoutManager.reverseLayout
-            }
-            val offset = recyclerView.computeVerticalScrollOffset()
-
             val runGeneration = ++mMaxScheduledGeneration
 
             diffExecutor.execute {
@@ -72,9 +65,6 @@ internal class DiffData<Type>(private val recyclerView: RecyclerView,
                     if (mMaxScheduledGeneration == runGeneration) {
                         data = ArrayList(newData)
                         diffResult.dispatchUpdatesTo(adapter)
-                        if (clipTop && offset == 0) {
-                            recyclerView.scrollToPosition(0)
-                        }
                     }
                 }
             }
