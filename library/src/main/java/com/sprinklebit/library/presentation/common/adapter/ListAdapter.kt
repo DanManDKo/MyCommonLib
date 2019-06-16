@@ -12,7 +12,7 @@ abstract class ListAdapter<T, VH : RecyclerView.ViewHolder>
 constructor(private val diffCallback: DiffUtil.ItemCallback<T>)
     : RecyclerView.Adapter<VH>() {
 
-    var data: DiffData<T>? = null
+    private var data: DiffData<T>? = null
 
     fun submitList(list: List<T>?) {
         data!!.updateData(list ?: Collections.emptyList())
