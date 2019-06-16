@@ -1,4 +1,4 @@
-package com.sprinklebit.library.presentation.common
+package com.sprinklebit.library.presentation.common.adapter
 
 import android.os.Handler
 import android.os.Looper
@@ -15,10 +15,9 @@ import kotlin.collections.ArrayList
  * PersonalInfo: Sasha Shcherbinin
  * Date: 10/31/17
  */
-@Deprecated("Use ListAdapter instead")
-class DiffData<Type>(private val recyclerView: RecyclerView,
-                     private val adapter: RecyclerView.Adapter<*>,
-                     private val isItemTheSame: (Type, Type) -> Boolean) {
+internal class DiffData<Type>(private val recyclerView: RecyclerView,
+                              private val adapter: RecyclerView.Adapter<*>,
+                              private val diffCallback: DiffUtil.ItemCallback<Type>) {
 
     private var data: List<Type> = Collections.emptyList()
 
@@ -51,7 +50,7 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
 
                     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                         return try {
-                            isItemTheSame.invoke(
+                            diffCallback.areItemsTheSame(
                                     oldData[oldItemPosition],
                                     newData[newItemPosition])
                         } catch (e: Throwable) {
@@ -61,7 +60,9 @@ class DiffData<Type>(private val recyclerView: RecyclerView,
 
                     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                         return try {
-                            oldData[oldItemPosition] == newData[newItemPosition]
+                            diffCallback.areContentsTheSame(
+                                    oldData[oldItemPosition],
+                                    newData[newItemPosition])
                         } catch (e: Throwable) {
                             false
                         }
