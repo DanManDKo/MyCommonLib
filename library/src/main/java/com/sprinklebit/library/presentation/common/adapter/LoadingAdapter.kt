@@ -181,8 +181,8 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
 
     @Suppress("unused")
     fun setHasNext(hasNext: Boolean) {
-        if (this.hasNext == hasNext) return
         firstTime = false
+        if (this.hasNext == hasNext && !hasNext) return
         if (hasNext) {
             val add = !this.hasNext
             this.hasNext = hasNext
