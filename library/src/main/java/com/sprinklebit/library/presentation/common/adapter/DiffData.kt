@@ -3,7 +3,6 @@ package com.sprinklebit.library.presentation.common.adapter
 import android.os.Handler
 import android.os.Looper
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import java.util.concurrent.Executor

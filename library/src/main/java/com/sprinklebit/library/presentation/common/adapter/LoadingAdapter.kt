@@ -181,23 +181,20 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
 
     @Suppress("unused")
     fun setHasNext(hasNext: Boolean) {
+        if (this.hasNext == hasNext) return
         firstTime = false
-        try {
-            if (hasNext) {
-                val add = !this.hasNext
-                this.hasNext = hasNext
+        if (hasNext) {
+            val add = !this.hasNext
+            this.hasNext = hasNext
 
-                if (add) {
-                    notifyItemInserted(loadingPosition)
-                } else {
-                    notifyItemChanged(loadingPosition)
-                }
+            if (add) {
+                notifyItemInserted(loadingPosition)
             } else {
-                this.hasNext = hasNext
-                notifyItemRemoved(loadingPosition)
+                notifyItemChanged(loadingPosition)
             }
-        } catch (e: Throwable) {
-            Timber.e(e)
+        } else {
+            this.hasNext = hasNext
+            notifyItemRemoved(loadingPosition)
         }
     }
 
