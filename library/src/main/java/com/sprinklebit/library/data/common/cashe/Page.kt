@@ -11,12 +11,15 @@ import java.util.*
 class Page<T>(var hasNext: Boolean = false) {
 
     val dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
-    val lastObject: T?
-        get() = if (dataList.size > 0) dataList[dataList.size - 1] else null
     var page: Int = 1
         private set
     var error: Throwable? = null
     var maxCount: Int = 0
+
+    fun getLastObject(): T? {
+        return if (dataList.size > 0) dataList[dataList.size - 1] else null
+
+    }
 
     fun replace(index: Int, entity: T) {
         synchronized(dataList) {
@@ -47,5 +50,9 @@ class Page<T>(var hasNext: Boolean = false) {
 
     fun remove(index: Int) {
         dataList.removeAt(index)
+    }
+
+    fun add(entity: T) {
+        dataList.add(entity)
     }
 }

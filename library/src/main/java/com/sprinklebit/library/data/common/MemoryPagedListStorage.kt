@@ -72,6 +72,20 @@ private constructor(max: Int,
                 }
     }
 
+    fun appItem(query: Query,
+                entity: Entity)
+            : Completable {
+        return cache[query]
+                .flatMapCompletable { cacheEntity ->
+                    Completable.fromAction {
+                        val page = cacheEntity.entry
+                        page.add(entity)
+                        cache.put(query, CachePolicy.createEntry(page))
+                        updateSubject.onNext(query)
+                    }
+                }
+    }
+
     fun remove(query: Query, filter: (Entity) -> Boolean)
             : Completable {
         return cache[query]
@@ -128,7 +142,7 @@ private constructor(max: Int,
         return if (refresh)
             Params(query, 0, limit, null, page.getPage(refresh))
         else
-            Params(query, page.size(), limit, page.lastObject, page.getPage(refresh))
+            Params(query, page.size(), limit, page.getLastObject(), page.getPage(refresh))
     }
 
     fun fetchNext(query: Query, refresh: Boolean = false): Completable {
@@ -162,7 +176,7 @@ private constructor(max: Int,
                                 }
                                 .toObservable<Any>()
                     }
-            observable = observable!!
+            observable = observable
                     .doOnTerminate { fetchMap.remove(query) }
                     .doOnDispose { fetchMap.remove(query) }
                     .publish()

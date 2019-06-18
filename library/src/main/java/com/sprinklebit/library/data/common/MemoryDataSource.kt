@@ -69,7 +69,7 @@ private constructor(capacity: Int,
                                         page.size(),
                                         page.page,
                                         params.requestedLoadSize,
-                                        page.lastObject
+                                        page.getLastObject()
                                 ))
                                 .blockingGet()
                         page.addResult(newList.data)
@@ -113,7 +113,7 @@ private constructor(capacity: Int,
                                     page.size(),
                                     page.page,
                                     params.requestedLoadSize,
-                                    page.lastObject
+                                    page.getLastObject()
                             ))
                             .blockingGet()
                     page.addResult(newList.data)
