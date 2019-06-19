@@ -72,21 +72,6 @@ private constructor(max: Int,
                 }
     }
 
-    @Deprecated("")
-    fun update(query: Query,
-               onUpdateCallback: (List<Entity>) -> Unit)
-            : Completable {
-        return cache[query]
-                .flatMapCompletable { cacheEntity ->
-                    Completable.fromAction {
-                        val page = cacheEntity.entry
-                        onUpdateCallback.invoke(page.dataList)
-                        cache.put(query, CachePolicy.createEntry(page))
-                        updateSubject.onNext(query)
-                    }
-                }
-    }
-
     fun remove(query: Query, filter: (Entity) -> Boolean)
             : Completable {
         return cache[query]
