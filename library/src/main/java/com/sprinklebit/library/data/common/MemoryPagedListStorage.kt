@@ -72,14 +72,15 @@ private constructor(max: Int,
                 }
     }
 
-    fun appItem(query: Query,
-                entity: Entity)
+    @Deprecated("")
+    fun update(query: Query,
+               onUpdateCallback: (List<Entity>) -> Unit)
             : Completable {
         return cache[query]
                 .flatMapCompletable { cacheEntity ->
                     Completable.fromAction {
                         val page = cacheEntity.entry
-                        page.add(entity)
+                        onUpdateCallback.invoke(page.dataList)
                         cache.put(query, CachePolicy.createEntry(page))
                         updateSubject.onNext(query)
                     }
