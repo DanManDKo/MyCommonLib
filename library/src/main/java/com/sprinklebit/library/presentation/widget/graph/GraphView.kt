@@ -52,7 +52,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
 
         initMarker()
         setBackgroundColor(backgroundResourceId)
-        setupChart()
+        updateChart()
     }
 
     private fun initMarker() {
@@ -61,7 +61,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         this.marker = markerView
     }
 
-    private fun setupChart() {
+    private fun updateChart() {
         val xAxisRenderer = NoOverlappingLabelsXAxisRenderer(this)
         xAxisRenderer.setLabelSpacing(SizeUtils.convertDpToPixel(5f, context).toInt())
         this.setXAxisRenderer(xAxisRenderer)
@@ -120,8 +120,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
         xAxis.setDrawLabels(isXValuesEnabled)
 
         setViewPortOffset()
-        this.invalidate()
-
+        updateChart()
 
         val minValues = points.size.toFloat()
         val minXVisibleRange = getMinVisibleXRange()
@@ -193,7 +192,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
 
     fun setLineColor(lineColor: Int) {
         this.lineColor = lineColor
-        invalidate()
+        updateChart()
     }
 
     private fun getMinVisibleXRange(): Float {
@@ -204,7 +203,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
 
     fun setFillDrawable(drawable: Drawable?) {
         this.fillDrawable = drawable
-        invalidate()
+        updateChart()
     }
 
     fun setSelectedListener(listener: ((point: ChartPoint?) -> Unit)?) {
