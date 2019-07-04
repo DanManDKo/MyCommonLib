@@ -21,7 +21,7 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
     private var hasNext = true
 
     private val loadingPosition: Int
-        get() = wrappedAdapter.itemCount - 1
+        get() = wrappedAdapter.itemCount
 
     companion object {
         const val LOADING_TYPE = -1023
