@@ -118,7 +118,9 @@ private constructor(max: Int,
                         if (exception != null && !emitter.isDisposed) {
                             emitter.onError(exception)
                         }
-                        emitter.onComplete()
+                        if (!emitter.isDisposed) {
+                            emitter.onComplete()
+                        }
                     }
                 }.toObservable()
     }
