@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewParent
+import androidx.annotation.CallSuper
 import com.sprinklebit.library.presentation.widget.graph.FixedLineChart
 
 open class TouchedLineChart(context: Context, attrs: AttributeSet?)
@@ -54,6 +55,7 @@ open class TouchedLineChart(context: Context, attrs: AttributeSet?)
         return false
     }
 
+    @CallSuper
     override fun onLongPress(motionEvent: MotionEvent) {
         dragging = true
         val h = getHighlightByTouchPoint(motionEvent.x, motionEvent.y)

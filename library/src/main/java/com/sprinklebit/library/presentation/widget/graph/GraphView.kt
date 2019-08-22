@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.MotionEvent
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.components.YAxis
@@ -30,6 +31,7 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
 
     var yValueFormatter: ((value: Float) -> String)? = null
     var valueSelectedListener: ((point: ChartPoint?) -> Unit)? = null
+    private var longClickListener: (() -> Unit)? = null
 
     init {
         val a = context
@@ -191,6 +193,15 @@ class GraphView(context: Context, attrs: AttributeSet? = null)
                 valueSelectedListener?.invoke(e?.data as ChartPoint)
             }
         })
+    }
+
+    fun setOnLongClickListener(longClickListener: (() -> Unit)?) {
+        this.longClickListener = longClickListener
+    }
+
+    override fun onLongPress(motionEvent: MotionEvent) {
+        super.onLongPress(motionEvent)
+        longClickListener?.invoke()
     }
 
 }
