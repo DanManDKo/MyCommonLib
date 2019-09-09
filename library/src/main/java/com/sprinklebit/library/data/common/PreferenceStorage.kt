@@ -19,10 +19,12 @@ class PreferenceStorage {
     constructor(context: Context, name: String) {
         this.preferences = context
                 .getSharedPreferences(name, Context.MODE_PRIVATE)
+        this.trigger = name
     }
 
     constructor(context: Context) {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        this.trigger = "default"
     }
 
     companion object {
@@ -38,11 +40,11 @@ class PreferenceStorage {
         }
     }
 
+    private val trigger: String
     private var preferenceSubject: PublishSubject<String> = PublishSubject.create<String>()
-
     private var preferences: SharedPreferences
 
-    fun update(trigger: String, save: (SharedPreferences.Editor) -> Unit): Completable {
+    fun update(save: (SharedPreferences.Editor) -> Unit): Completable {
         return Completable.fromAction {
             val edit = preferences.edit()
             try {
@@ -58,7 +60,7 @@ class PreferenceStorage {
         }
     }
 
-    fun <T> observe(trigger: String, actionGet: (SharedPreferences) -> T): Observable<T> {
+    fun <T> observe(actionGet: (SharedPreferences) -> T): Observable<T> {
         return Observable.create<T> { emitter ->
             try {
                 emitter.onNext(actionGet.invoke(preferences))
