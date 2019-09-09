@@ -42,24 +42,6 @@ class PreferenceStorage {
 
     private var preferences: SharedPreferences
 
-    fun set(trigger: String, save: (SharedPreferences.Editor) -> Unit) {
-        val edit = preferences.edit()
-        try {
-            save.invoke(edit)
-            edit.apply()
-        } catch (e: Exception) {
-            Timber.e(e)
-            preferences.edit().clear().apply()
-            save.invoke(edit)
-            edit.apply()
-        }
-        preferenceSubject.onNext(trigger)
-    }
-
-    fun <T> get(actionGet: (SharedPreferences) -> T): T {
-        return actionGet.invoke(preferences)
-    }
-
     fun update(trigger: String, save: (SharedPreferences.Editor) -> Unit): Completable {
         return Completable.fromAction {
             val edit = preferences.edit()
@@ -82,6 +64,8 @@ class PreferenceStorage {
                 emitter.onNext(actionGet.invoke(preferences))
             } catch (e: Throwable) {
                 emitter.onError(e)
+                preferences.edit().clear().apply()
+                actionGet.invoke(preferences)
             }
             emitter.onComplete()
         }.repeatWhen { preferenceSubject.filter { s -> s == trigger } }
