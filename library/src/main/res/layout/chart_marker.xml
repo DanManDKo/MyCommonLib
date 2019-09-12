@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/background_white_stroke_black_rounded_3dp"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="4dp">
 
     <TextView
@@ -19,14 +19,6 @@
         android:textSize="12sp"
         tools:text="text text text text" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp"
-        android:background="@color/black" />
-
     <TextView
         android:id="@+id/dateValueTv"
         android:layout_width="wrap_content"
@@ -34,6 +26,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="2dp"
+        android:layout_marginStart="5dp"
         android:textColor="?android:textColorPrimary"
         android:textSize="12sp"
         tools:text="text text text text" />
