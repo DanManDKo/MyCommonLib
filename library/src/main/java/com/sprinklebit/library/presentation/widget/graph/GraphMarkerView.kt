@@ -13,7 +13,7 @@ import com.sprinklebit.library.utils.SizeUtils
 import java.text.DateFormat
 import java.util.*
 
-class GraphMarkerView(context: Context) : MarkerView(context, R.layout.chart_marker) {
+class GraphMarkerView(context: Context) : MarkerView(context, R.layout.view_chart_marker) {
 
     private val mOffset2 = MPPointF()
     private val rightOffset = SizeUtils.convertDpToPixel(50f, context)
