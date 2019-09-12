@@ -2,8 +2,8 @@ package com.movies.popular.popularmovies.presentation.common
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.hannesdorfmann.fragmentargs.FragmentArgs
 
 import dagger.android.support.AndroidSupportInjection
@@ -14,9 +14,9 @@ import timber.log.Timber
  * PersonalInfo: Sasha Shcherbinin
  * Date: 8/20/17
  */
-open class BaseFragment : androidx.fragment.app.Fragment() {
+open class BaseFragment : Fragment() {
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         try {
             if (hasInjection()) {
                 AndroidSupportInjection.inject(this)
