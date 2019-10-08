@@ -11,17 +11,17 @@ class LazyWeakReference<T> constructor(private val creation: () -> T) {
     private var weakReference: WeakReference<T>? = null
 
     fun get(): T {
-        if (weakReference == null) {
+        return if (weakReference == null) {
             val referent = creation.invoke()
             weakReference = WeakReference(referent)
-            return referent
+            referent
         } else {
             val get = weakReference!!.get()
             if (get == null) {
                 val referent = creation.invoke()
                 weakReference = WeakReference(referent)
-                return referent
-            } else return get
+                referent
+            } else get
         }
     }
 }

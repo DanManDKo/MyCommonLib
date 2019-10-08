@@ -71,7 +71,6 @@ fun <T1, T2, T3> observeForever(p1: LiveData<T1>,
                                 p3: LiveData<T3>,
                                 block: (T1, T2, T3) -> Unit)
         : OneTimeActionWithParameter<Triple<T1, T2, T3>> {
-
     val action = OneTimeActionWithParameter<Triple<T1, T2, T3>>() {
         block(it.first, it.second, it.third)
     }
@@ -93,5 +92,23 @@ fun <T1, T2, T3> observeForever(p1: LiveData<T1>,
     }
 
     return action
+}
+
+fun observeForever(array: Array<LiveData<out Any?>>,
+                   block: (Array<Any>) -> Unit) {
+
+    val action = OneTimeActionWithParameter<Array<Any?>> {
+        block(it.requireNoNulls())
+    }
+
+    array.forEach { liveData ->
+        liveData.observeForever {
+            val newArray = arrayOfNulls<Any>(array.size)
+            array.forEachIndexed { index, liveData ->
+                newArray[index] = liveData.value
+            }
+            action.invoke(newArray)
+        }
+    }
 }
 
