@@ -98,7 +98,7 @@ fun observeForever(array: Array<LiveData<out Any?>>,
                    block: (Array<Any>) -> Unit) {
 
     val action = OneTimeActionWithParameter<Array<Any?>> {
-        block(it.requireNoNulls())
+        if (!it.contains(null)) block(it.requireNoNulls())
     }
 
     array.forEach { liveData ->
