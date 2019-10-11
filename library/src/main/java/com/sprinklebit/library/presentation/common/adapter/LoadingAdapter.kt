@@ -49,14 +49,9 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (wrappedAdapter.itemCount == 0) {
-                    if (hasNext) {
-                        notifyItemRemoved(loadingPosition)
-                    }
-                    notifyItemRangeInserted(positionStart, itemCount)
-                    if (hasNext) {
-                        notifyItemInserted(loadingPosition)
-                    }
+                if (loadingPosition == positionStart + 10 && hasNext) {
+                    notifyItemChanged(loadingPosition)
+                    notifyItemRangeInserted(positionStart + 1, itemCount)
                 } else {
                     notifyItemRangeInserted(positionStart, itemCount)
                 }
