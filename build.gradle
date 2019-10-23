@@ -10,7 +10,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
@@ -29,6 +28,13 @@ ext {
     glideVersion = '4.9.0'
     dagger_version = '2.16'
     pagingVersion = '1.0.1'
+
+    def hashStdOut = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-list', '--count', 'HEAD'
+        standardOutput = hashStdOut
+    }
+    buildCode = hashStdOut.toString().find("\\d+")
 }
 
 task clean(type: Delete) {
