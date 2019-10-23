@@ -28,13 +28,6 @@ ext {
     glideVersion = '4.9.0'
     dagger_version = '2.16'
     pagingVersion = '1.0.1'
-
-    def hashStdOut = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-list', '--count', 'HEAD'
-        standardOutput = hashStdOut
-    }
-    buildCode = hashStdOut.toString().find("\\d+")
 }
 
 task clean(type: Delete) {
