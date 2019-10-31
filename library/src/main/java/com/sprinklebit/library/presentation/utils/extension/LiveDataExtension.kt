@@ -94,7 +94,7 @@ fun <T1, T2, T3> observeForever(p1: LiveData<T1>,
     return action
 }
 
-fun observeForever(array: Array<LiveData<out Any?>>,
+fun observeForever(vararg array: LiveData<Any>,
                    block: (Array<Any>) -> Unit) {
 
     val action = OneTimeActionWithParameter<Array<Any?>> {

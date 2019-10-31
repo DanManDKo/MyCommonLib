@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 
 group = 'com.github.sprinklebit.android'
-version = '1.2.0'
+version = '1.2.1'
 
 android {
     compileSdkVersion 28
@@ -49,6 +49,9 @@ dependencies {
     api 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     /* Logging */
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    testImplementation 'junit:junit:4.12'
+    // test
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-inline:3.1.0"
+    testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
 }
 
