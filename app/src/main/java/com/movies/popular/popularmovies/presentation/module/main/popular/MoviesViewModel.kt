@@ -9,7 +9,7 @@ import com.movies.popular.popularmovies.presentation.common.ContentState
 import com.movies.popular.popularmovies.presentation.common.SingleLiveEvent
 import com.movies.popular.popularmovies.presentation.common.error.ErrorHandler
 import com.movies.popular.popularmovies.utils.RxDisposable
-import com.sprinklebit.library.presentation.utils.extension.observeArgForever
+import com.sprinklebit.library.presentation.utils.extension.observeForever
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

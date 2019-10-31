@@ -20,7 +20,6 @@ class OneTimeActionWithParameter<T> constructor(private val event: (T) -> Unit) 
                 event.invoke(t)
             }
         }
-
     }
 
     fun reset() {

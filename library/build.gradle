@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 
 group = 'com.github.sprinklebit.android'
-version = '1.3.0'
+version = '1.4.0'
 
 android {
     compileSdkVersion 28
