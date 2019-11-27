@@ -37,10 +37,11 @@ private constructor(max: Int,
                 .map<Page<Entity>> { it.entry }
                 .map<PageBundle<Entity>> {
                     PageBundle(
-                            ArrayList(it.dataList),
-                            it.hasNext,
-                            it.maxCount,
-                            it.error
+                            data = ArrayList(it.dataList),
+                            hasNext = it.hasNext,
+                            maxCount = it.maxCount,
+                            topItem = it.topItem,
+                            error = it.error
                     )
                 }
                 .toObservable()
@@ -146,6 +147,7 @@ private constructor(max: Int,
                                     page.addResult(result.data)
                                     page.hasNext = result.hasNext
                                     page.maxCount = result.maxCount
+                                    page.topItem = result.topItem
                                     page.error = null
                                     cache.put(query, CachePolicy.createEntry(page))
                                     updateSubject.onNext(query)
@@ -237,7 +239,8 @@ private constructor(max: Int,
     data class FetchResult<E>(
             val data: List<E>,
             val hasNext: Boolean,
-            val maxCount: Int = -1
+            val maxCount: Int = -1,
+            val topItem: E? = null
     )
 
 }

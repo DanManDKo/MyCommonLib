@@ -13,12 +13,12 @@ class Page<T>(var hasNext: Boolean = false) {
     val dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
     var page: Int = 1
         private set
+    var topItem: T? = null
     var error: Throwable? = null
     var maxCount: Int = 0
 
     fun getLastObject(): T? {
         return if (dataList.size > 0) dataList[dataList.size - 1] else null
-
     }
 
     fun replace(index: Int, entity: T) {
