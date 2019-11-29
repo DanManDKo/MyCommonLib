@@ -2,6 +2,7 @@ package com.sprinklebit.library.utils
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 
 object ThemeUtils {
 
@@ -15,6 +16,17 @@ object ThemeUtils {
         }
     }
 
+    @JvmStatic
+    fun getDrawableFromRes(context: Context, attr: Int): Drawable? {
+        val a = context.obtainStyledAttributes(intArrayOf(attr))
+        try {
+            return a.getDrawable(0)
+        } finally {
+            a.recycle()
+        }
+    }
+
+    @JvmStatic
     fun getColorStateList(context: Context, attr: Int): ColorStateList? {
         val a = context.obtainStyledAttributes(intArrayOf(attr))
         try {
