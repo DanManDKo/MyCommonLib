@@ -56,4 +56,15 @@ object ThemeUtils {
             a.recycle()
         }
     }
+
+
+    @JvmStatic
+    fun getDrawableFromAttr(theme: Resources.Theme, attr: Int): Drawable? {
+        val a = theme.obtainStyledAttributes(intArrayOf(attr))
+        try {
+            return a.getDrawable(0)
+        } finally {
+            a.recycle()
+        }
+    }
 }
