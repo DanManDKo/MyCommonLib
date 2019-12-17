@@ -88,6 +88,28 @@ private constructor(max: Int,
                 }
     }
 
+    /*
+     * Add this entity as a first element of the list
+     * @param query: Query filter key for storage data
+     * @param entity: Entity what will be added to the list
+     * @return Completable Rx completable object like callback when the result will be ready
+     */
+    fun addFirst(query: Query, entity: Entity): Completable {
+        return cache[query].flatMapCompletable {
+            addEntityAsFirst(it, query, entity)
+        }
+    }
+
+    private fun addEntityAsFirst(cacheEntity: CachedEntry<Page<Entity>>, query: Query, entity: Entity)
+            : Completable {
+        return Completable.fromAction {
+            val page = cacheEntity.entry
+            page.add(0, entity)
+            cache.put(query, CachePolicy.createEntry(page))
+            updateSubject.onNext(query)
+        }
+    }
+
     private fun removeEntity(cacheEntity: CachedEntry<Page<Entity>>, query: Query,
                              filter: (Entity) -> Boolean): Completable {
         return Completable.fromAction {

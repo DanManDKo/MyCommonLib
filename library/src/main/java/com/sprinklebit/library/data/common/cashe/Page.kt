@@ -55,4 +55,8 @@ class Page<T>(var hasNext: Boolean = false) {
     fun add(entity: T) {
         dataList.add(entity)
     }
+
+    fun add(index: Int, entity: T) {
+        dataList.add(index, entity)
+    }
 }
