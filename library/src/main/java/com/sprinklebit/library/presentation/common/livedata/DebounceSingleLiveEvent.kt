@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sprinklebit.library.presentation.common.livedata
 
 import androidx.annotation.MainThread
@@ -7,13 +9,13 @@ import androidx.lifecycle.Observer
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
-class DebounceSingleLiveEvent<T> constructor(millisInFuture: Long, liveData: LiveData<*>)
+class DebounceSingleLiveEvent<T> constructor(millisInFuture: Long, cancelLiveData: LiveData<*>? = null)
     : DebounceMutableLiveData<T>(millisInFuture) {
 
     private val pending = AtomicBoolean(false)
 
     init {
-        liveData.observeForever {
+        cancelLiveData?.observeForever {
             timer.cancel()
         }
     }
