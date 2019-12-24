@@ -10,7 +10,7 @@ import java.util.*
  */
 class Page<T>(var hasNext: Boolean = false) {
 
-    val dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
+    var dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
     var page: Int = 1
         private set
     var topItem: T? = null
@@ -39,7 +39,7 @@ class Page<T>(var hasNext: Boolean = false) {
     }
 
     fun clean() {
-        dataList.clear()
+        dataList = Collections.synchronizedList(ArrayList())
         error = null
         page = 1
     }
