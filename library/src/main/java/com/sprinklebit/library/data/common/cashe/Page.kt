@@ -39,7 +39,7 @@ class Page<T>(var hasNext: Boolean = false) {
     }
 
     fun clean() {
-        dataList = Collections.synchronizedList(ArrayList())
+        dataList.clear()
         error = null
         page = 1
     }
