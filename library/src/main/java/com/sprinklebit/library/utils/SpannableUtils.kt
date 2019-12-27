@@ -37,7 +37,7 @@ object SpannableUtils {
                         @AttrRes resColor: Int) {
         val attrs = intArrayOf(resColor)
         val ta = context.obtainStyledAttributes(attrs)
-        val color = ta.getResourceId(0, android.R.color.black)
+        val color = ta.getColor(0, android.R.color.black)
         ta.recycle()
 
         val start = spanStr.toString().indexOf(string)
