@@ -1,6 +1,7 @@
 package com.sprinklebit.library.presentation.utils.extension
 
 import android.content.Intent
+import java.io.Serializable
 
 fun Intent.getExtraInt(key: String): Int? {
     if (!this.hasExtra(key)) {
@@ -28,4 +29,11 @@ fun Intent.getExtraBoolean(key: String): Boolean? {
         return null
     }
     return this.getBooleanExtra(key, false)
+}
+
+fun Intent.getExtraSerializable(key: String): Serializable? {
+    if (!this.hasExtra(key)) {
+        return null
+    }
+    return this.getSerializableExtra(key)
 }
