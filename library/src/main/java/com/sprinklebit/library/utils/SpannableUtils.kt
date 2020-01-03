@@ -66,5 +66,15 @@ object SpannableUtils {
                 start, start + string.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
-
+    @JvmStatic
+    fun doBoldSpan(context: Context,
+                   spanStr: SpannableString,
+                   string: String,
+                   @AttrRes resColor: Int) {
+        val start = spanStr.toString().indexOf(string)
+        val color = ThemeUtils.getColorFromAttr(context, resColor)
+        spanStr.setSpan(StyleSpan(Typeface.BOLD), start, start + string.length, 0)
+        spanStr.setSpan(ForegroundColorSpan(color),
+                start, start + string.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
 }
