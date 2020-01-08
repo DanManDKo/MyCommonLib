@@ -1,10 +1,11 @@
-package com.sprinklebit.library.presentation.common.adapter
+package com.sprinklebit.app.presentation.feature.group.main
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sprinklebit.library.R
+import com.sprinklebit.library.presentation.common.adapter.RecyclerViewAdapterWrapper
 import timber.log.Timber
 
 @Suppress("unused")
@@ -19,6 +20,8 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
     private var firstTime = true
     private var loading = false
     private var hasNext = true
+
+    private var oldSize = 0
 
     private val loadingPosition: Int
         get() = wrappedAdapter.itemCount
@@ -49,16 +52,18 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (loadingPosition == positionStart + 10 && hasNext) {
-                    notifyItemChanged(loadingPosition)
-                    notifyItemRangeInserted(positionStart + 1, itemCount)
+                if (oldSize == 0 && hasNext) {
+                    notifyItemRemoved(loadingPosition)
+                    notifyItemRangeInserted(positionStart, itemCount + 1)
                 } else {
                     notifyItemRangeInserted(positionStart, itemCount)
                 }
+                oldSize = wrappedAdapter.itemCount
             }
 
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
                 notifyItemRangeRemoved(positionStart, itemCount)
+                oldSize = wrappedAdapter.itemCount
             }
 
             override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
