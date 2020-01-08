@@ -1,11 +1,10 @@
-package com.sprinklebit.app.presentation.feature.group.main
+package com.sprinklebit.library.presentation.common.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sprinklebit.library.R
-import com.sprinklebit.library.presentation.common.adapter.RecyclerViewAdapterWrapper
 import timber.log.Timber
 
 @Suppress("unused")
