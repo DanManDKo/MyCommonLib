@@ -51,7 +51,7 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (oldSize == 0 && hasNext) {
+                if (oldSize <= 3 && hasNext) {
                     notifyItemRemoved(loadingPosition)
                     notifyItemRangeInserted(positionStart, itemCount + 1)
                 } else {
@@ -66,7 +66,6 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-                notifyItemMoved(fromPosition, toPosition)
             }
         }
     }
