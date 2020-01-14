@@ -20,8 +20,6 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
     private var loading = false
     private var hasNext = true
 
-    private var oldSize = 0
-
     private val loadingPosition: Int
         get() = wrappedAdapter.itemCount
 
@@ -51,21 +49,15 @@ class LoadingAdapter(adapter: RecyclerView.Adapter<*>,
             }
 
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (oldSize <= 3 && hasNext) {
-                    notifyItemRemoved(loadingPosition)
-                    notifyItemRangeInserted(positionStart, itemCount + 1)
-                } else {
-                    notifyItemRangeInserted(positionStart, itemCount)
-                }
-                oldSize = wrappedAdapter.itemCount
+                notifyItemRangeInserted(positionStart, itemCount)
             }
 
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
                 notifyItemRangeRemoved(positionStart, itemCount)
-                oldSize = wrappedAdapter.itemCount
             }
 
             override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                notifyDataSetChanged()
             }
         }
     }
