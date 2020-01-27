@@ -33,7 +33,8 @@ private constructor(max: Int,
     fun refresh(query: Query): Completable {
         var observable: Observable<Entity>? = fetchMap[query]
         if (observable == null) {
-            observable = NetworkStateRxHelper.checkConnection().filter { it }.take(1)
+            observable = NetworkStateRxHelper.checkConnection()
+                    .filter { isConnected -> isConnected }.take(1)
                     .concatMapSingle { fetcher.invoke(query) }
                     .subscribeOn(Schedulers.io())
                     .doOnNext { cacheInfo.put(query, CachePolicy.createEntry()) }

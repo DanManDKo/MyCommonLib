@@ -6,11 +6,12 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 
 object NetworkStateHelper {
 
     private var isConnected: Boolean? = null
-    private val listeners = LinkedList<ChangeListener>()
+    private val listeners = ConcurrentLinkedQueue<ChangeListener>()
 
     fun subscribe(listener: ChangeListener) {
         if (isConnected == null) error("You must to make initialization NetworkStateHelper in base Application class")

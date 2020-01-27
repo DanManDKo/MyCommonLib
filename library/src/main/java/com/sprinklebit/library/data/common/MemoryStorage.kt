@@ -67,7 +67,8 @@ open class MemoryStorage<Query, Entity>(max: Int,
         if (fetcher != null) {
             var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
-                observable = NetworkStateRxHelper.checkConnection().filter { it }.take(1)
+                observable = NetworkStateRxHelper.checkConnection()
+                        .filter { isConnected -> isConnected }.take(1)
                         .concatMapSingle { fetcher.invoke(query) }
                         .doOnNext { entity ->
                             cache.put(query, CachePolicy.createEntry(entity))

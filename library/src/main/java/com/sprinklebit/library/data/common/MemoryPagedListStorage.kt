@@ -203,7 +203,8 @@ private constructor(max: Int,
     }
 
     private fun fetch(params: Params<Query, Entity>): Single<FetchResult<Entity>> {
-        return NetworkStateRxHelper.checkConnection().filter { it }.take(1)
+        return NetworkStateRxHelper.checkConnection()
+                .filter { isConnected -> isConnected }.take(1)
                 .concatMapSingle { fetcher.invoke(params) }
                 .singleOrError()
     }
