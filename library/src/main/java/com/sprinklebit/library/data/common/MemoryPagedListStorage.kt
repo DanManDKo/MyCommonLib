@@ -5,6 +5,7 @@ import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
 import com.sprinklebit.library.data.common.cashe.Page
 import com.sprinklebit.library.domain.model.PageBundle
+import com.sprinklebit.library.helper.NetworkStateRxHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -13,11 +14,6 @@ import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-/**
- * Created with Android Studio.
- * User: Sasha Shcherbinin
- * Date: 2/25/18
- */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class MemoryPagedListStorage<Query, Entity>
 private constructor(max: Int,
@@ -207,7 +203,9 @@ private constructor(max: Int,
     }
 
     private fun fetch(params: Params<Query, Entity>): Single<FetchResult<Entity>> {
-        return fetcher.invoke(params)
+        return NetworkStateRxHelper.checkConnection().filter { it }.take(1)
+                .concatMapSingle { fetcher.invoke(params) }
+                .singleOrError()
     }
 
     class Builder<Query, Entity>(

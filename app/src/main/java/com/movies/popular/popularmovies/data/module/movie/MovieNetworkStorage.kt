@@ -3,7 +3,6 @@ package com.movies.popular.popularmovies.data.module.movie
 import com.movies.popular.popularmovies.data.network.mapper.MovieResponseMapper
 import com.movies.popular.popularmovies.data.network.service.DiscoverService
 import com.movies.popular.popularmovies.domain.model.Movie
-import com.sprinklebit.library.data.common.mappers.Mappers
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -22,7 +21,7 @@ constructor(private val discoverService: DiscoverService,
         return if (page > 2) Single.just(ArrayList())
         else discoverService.getMovies(page = page)
                 .subscribeOn(Schedulers.io())
-                .map { Mappers.mapCollection(it.results, movieResponseMapper) }
+                .map { it.results!!.map { movieResponseMapper.map(it) } }
                 .map {
                     val arrayList = ArrayList<Movie>()
                     if (page == 1) {

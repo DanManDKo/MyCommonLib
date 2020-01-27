@@ -3,6 +3,7 @@ package com.sprinklebit.library.data.common
 import com.sprinklebit.library.data.common.cashe.CacheInfo
 import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
+import com.sprinklebit.library.helper.NetworkStateRxHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -32,9 +33,9 @@ private constructor(max: Int,
     fun refresh(query: Query): Completable {
         var observable: Observable<Entity>? = fetchMap[query]
         if (observable == null) {
-            observable = fetcher.invoke(query)
+            observable = NetworkStateRxHelper.checkConnection().filter { it }.take(1)
+                    .concatMapSingle { fetcher.invoke(query) }
                     .subscribeOn(Schedulers.io())
-                    .toObservable()
                     .doOnNext { cacheInfo.put(query, CachePolicy.createEntry()) }
                     .flatMapCompletable { permanent.write(query, it) }
                     .doOnTerminate { fetchMap.remove(query) }

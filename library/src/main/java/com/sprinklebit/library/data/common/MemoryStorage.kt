@@ -3,6 +3,7 @@ package com.sprinklebit.library.data.common
 import com.sprinklebit.library.data.common.cashe.CachePolicy
 import com.sprinklebit.library.data.common.cashe.CachedEntry
 import com.sprinklebit.library.data.common.cashe.ObservableLruCache
+import com.sprinklebit.library.helper.NetworkStateRxHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -11,11 +12,6 @@ import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
-/**
- * Created with Android Studio.
- * User: Sasha Shcherbinin
- * Date: 2/25/18
- */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 open class MemoryStorage<Query, Entity>(max: Int,
                                         private val cachePolicy: CachePolicy,
@@ -71,8 +67,8 @@ open class MemoryStorage<Query, Entity>(max: Int,
         if (fetcher != null) {
             var observable: Observable<Entity>? = fetchMap[query]
             if (observable == null) {
-                observable = fetcher.invoke(query)
-                        .toObservable()
+                observable = NetworkStateRxHelper.checkConnection().filter { it }.take(1)
+                        .concatMapSingle { fetcher.invoke(query) }
                         .doOnNext { entity ->
                             cache.put(query, CachePolicy.createEntry(entity))
                             updateSubject.onNext(query)

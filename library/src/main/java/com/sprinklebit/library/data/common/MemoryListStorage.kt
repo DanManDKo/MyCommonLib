@@ -12,11 +12,6 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * Created with Android Studio.
- * User: Sasha Shcherbinin
- * Date: 2/25/18
- */
 @Suppress("unused")
 class MemoryListStorage<Query, Entity>(max: Int, cachePolicy: CachePolicy,
                                        fetcher: ((Query) -> Single<List<Entity>>)?)
