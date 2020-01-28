@@ -13,9 +13,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-open class MemoryStorage<Query, Entity>(max: Int,
-                                        private val cachePolicy: CachePolicy,
-                                        private val fetcher: ((Query) -> Single<Entity>)?) {
+open class MemoryStorage<Query, Entity>
+internal constructor(max: Int,
+                     private val cachePolicy: CachePolicy,
+                     private val fetcher: ((Query) -> Single<Entity>)?) {
 
     protected val cache: ObservableLruCache<Query, CachedEntry<Entity>> = ObservableLruCache(max)
 
@@ -61,6 +62,19 @@ open class MemoryStorage<Query, Entity>(max: Int,
                     updateSubject.onNext(query)
                 }
                 .ignoreElement()
+    }
+
+    fun update(onUpdateCallback: (Entity) -> Entity)
+            : Completable {
+        return cache.get().concatMapCompletable { entity ->
+            Completable.fromAction {
+                val newEntity = onUpdateCallback.invoke(entity.value.entry)
+                if (newEntity != entity.value.entry) {
+                    cache.put(entity.key, CachePolicy.createEntry(newEntity))
+                    updateSubject.onNext(entity.key)
+                }
+            }
+        }
     }
 
     fun refresh(query: Query): Completable {
@@ -132,7 +146,7 @@ open class MemoryStorage<Query, Entity>(max: Int,
             return this
         }
 
-        fun build(): MemoryStorage<Query, Entity> {
+        open fun build(): MemoryStorage<Query, Entity> {
             this.max = if (this.max == 0) 10 else this.max
             this.cachePolicy = this.cachePolicy ?: CachePolicy.create(5, TimeUnit.MINUTES)
             if (fetcher == null) {
