@@ -2,12 +2,6 @@ package com.sprinklebit.library.data.common.cashe
 
 import java.util.*
 
-/**
- * Created with Android Studio.
- * User: Sasha Shcherbinin
- * Date: 10/17/17
- * Time: 4:39 PM
- */
 class Page<T>(var hasNext: Boolean = false) {
 
     var dataList: MutableList<T> = Collections.synchronizedList(ArrayList())
