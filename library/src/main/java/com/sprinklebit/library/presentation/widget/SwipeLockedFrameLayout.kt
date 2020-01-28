@@ -19,7 +19,7 @@ class SwipeLockedFrameLayout(context: Context, attrs: AttributeSet)
         if (view.parent != null) {
             notifyAllParentsExceptRecyclerDoNotInterceptSwipe(view.parent)
         }
-        if (view !is androidx.recyclerview.widget.RecyclerView) {
+        if (view !is RecyclerView) {
             view.requestDisallowInterceptTouchEvent(true)
         } else {
             view.requestDisallowInterceptTouchEvent(false)
