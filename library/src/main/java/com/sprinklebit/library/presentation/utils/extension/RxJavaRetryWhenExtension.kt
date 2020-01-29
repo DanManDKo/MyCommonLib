@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sprinklebit.library.presentation.utils.extension
 
 import com.sprinklebit.library.TestConfig
@@ -18,10 +20,10 @@ fun <T> Observable<T>.defaultRetryWhen(
         timeUnit: TimeUnit = TimeUnit.SECONDS,
         vararg acceptableErrors: KClass<out Throwable>
 ): Observable<T> {
-    return this.retryWhen { observable ->
-        if (TestConfig.isTestEnvironment) {
-            observable
-        } else {
+    return if (TestConfig.isTestEnvironment) {
+        this
+    } else {
+        this.retryWhen { observable ->
             observable.flatMap {
                 if (acceptableErrors.contains(it::class)) {
                     Observable.error<Int>(it)
@@ -43,10 +45,10 @@ fun <T> Single<T>.defaultRetryWhen(
         timeUnit: TimeUnit = TimeUnit.SECONDS,
         vararg acceptableErrors: KClass<out Throwable>
 ): Single<T> {
-    return this.retryWhen { single ->
-        if (TestConfig.isTestEnvironment) {
-            single
-        } else {
+    return if (TestConfig.isTestEnvironment) {
+        this
+    } else {
+        this.retryWhen { single ->
             single.flatMap {
                 if (acceptableErrors.contains(it::class)) {
                     Flowable.error<Int>(it)
@@ -68,10 +70,10 @@ fun Completable.defaultRetryWhen(
         timeUnit: TimeUnit = TimeUnit.SECONDS,
         vararg acceptableErrors: KClass<out Throwable>
 ): Completable {
-    return this.retryWhen { completable ->
-        if (TestConfig.isTestEnvironment) {
-            completable
-        } else {
+    return if (TestConfig.isTestEnvironment) {
+        this
+    } else {
+        this.retryWhen { completable ->
             completable.flatMap {
                 if (acceptableErrors.contains(it::class)) {
                     Flowable.error<Int>(it)
