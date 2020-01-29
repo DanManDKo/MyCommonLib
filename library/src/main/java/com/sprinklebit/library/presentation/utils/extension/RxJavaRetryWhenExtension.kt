@@ -1,5 +1,6 @@
 package com.sprinklebit.library.presentation.utils.extension
 
+import com.sprinklebit.library.TestConfig
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -18,12 +19,16 @@ fun <T> Observable<T>.defaultRetryWhen(
         vararg acceptableErrors: KClass<out Throwable>
 ): Observable<T> {
     return this.retryWhen { observable ->
-        observable.flatMap {
-            if (acceptableErrors.contains(it::class)) {
-                Observable.error<Int>(it)
-            } else {
-                Observable.timer(delay, timeUnit,
-                        AndroidSchedulers.mainThread())
+        if (TestConfig.isTestEnvironment) {
+            observable
+        } else {
+            observable.flatMap {
+                if (acceptableErrors.contains(it::class)) {
+                    Observable.error<Int>(it)
+                } else {
+                    Observable.timer(delay, timeUnit,
+                            AndroidSchedulers.mainThread())
+                }
             }
         }
     }
@@ -39,12 +44,16 @@ fun <T> Single<T>.defaultRetryWhen(
         vararg acceptableErrors: KClass<out Throwable>
 ): Single<T> {
     return this.retryWhen { single ->
-        single.flatMap {
-            if (acceptableErrors.contains(it::class)) {
-                Flowable.error<Int>(it)
-            } else {
-                Flowable.timer(delay, timeUnit,
-                        AndroidSchedulers.mainThread())
+        if (TestConfig.isTestEnvironment) {
+            single
+        } else {
+            single.flatMap {
+                if (acceptableErrors.contains(it::class)) {
+                    Flowable.error<Int>(it)
+                } else {
+                    Flowable.timer(delay, timeUnit,
+                            AndroidSchedulers.mainThread())
+                }
             }
         }
     }
@@ -60,12 +69,16 @@ fun Completable.defaultRetryWhen(
         vararg acceptableErrors: KClass<out Throwable>
 ): Completable {
     return this.retryWhen { completable ->
-        completable.flatMap {
-            if (acceptableErrors.contains(it::class)) {
-                Flowable.error<Int>(it)
-            } else {
-                Flowable.timer(delay, timeUnit,
-                        AndroidSchedulers.mainThread())
+        if (TestConfig.isTestEnvironment) {
+            completable
+        } else {
+            completable.flatMap {
+                if (acceptableErrors.contains(it::class)) {
+                    Flowable.error<Int>(it)
+                } else {
+                    Flowable.timer(delay, timeUnit,
+                            AndroidSchedulers.mainThread())
+                }
             }
         }
     }
