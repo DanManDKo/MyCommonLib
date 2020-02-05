@@ -12,7 +12,7 @@ class OneTimeActionWithParameterTest {
     @Test
     fun invoke() {
         val event = mock<(Int) -> Unit>()
-        val oneTimeActionWithParameter = OneTimeActionWithParameter(event)
+        val oneTimeActionWithParameter = OneTimeAction(event)
         val inOrder = inOrder(event)
 
         oneTimeActionWithParameter.invoke(10)
@@ -24,7 +24,7 @@ class OneTimeActionWithParameterTest {
     @Test
     fun invokeTheSame() {
         val event = mock<(Int) -> Unit>()
-        val oneTimeActionWithParameter = OneTimeActionWithParameter(event)
+        val oneTimeActionWithParameter = OneTimeAction(event)
         val inOrder = inOrder(event)
 
         oneTimeActionWithParameter.invoke(10)
@@ -37,7 +37,7 @@ class OneTimeActionWithParameterTest {
     @Test
     fun invokeArrayEquals() {
         val event = mock<(Array<*>) -> Unit>()
-        val oneTimeActionWithParameter = OneTimeActionWithParameter(event)
+        val oneTimeActionWithParameter = OneTimeAction(event)
         val inOrder = inOrder(event)
 
         val array1 = arrayOf(10, "test")
@@ -51,7 +51,7 @@ class OneTimeActionWithParameterTest {
     @Test
     fun invokeArrayNotEquals() {
         val event = mock<(Array<*>) -> Unit>()
-        val oneTimeActionWithParameter = OneTimeActionWithParameter(event)
+        val oneTimeActionWithParameter = OneTimeAction(event)
         val inOrder = inOrder(event)
 
         val array1 = arrayOf(10, "test")

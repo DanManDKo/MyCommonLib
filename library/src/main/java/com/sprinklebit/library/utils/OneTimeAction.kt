@@ -1,22 +1,24 @@
 package com.sprinklebit.library.utils
 
-/**
- * User: Sasha Shcherbinin
- * Date : 5/22/18
- */
-@Deprecated("use OneTimeActionWithParameter instead")
-class OneTimeAction constructor(private val event: () -> Unit) {
+internal class OneTimeAction<T> constructor(private val event: (T) -> Unit) {
 
-    private var firstTime: Boolean = true
+    private var t: T? = null
 
-    fun invoke() {
-        if (firstTime) {
-            event.invoke()
+    fun invoke(t: T) {
+        if (t != null && this.t != null && t is Array<*>) {
+            if (!(t as Array<*>).contentEquals(this.t as Array<*>)) {
+                this.t = t
+                event.invoke(t)
+            }
+        } else {
+            if (this.t != t) {
+                this.t = t
+                event.invoke(t)
+            }
         }
-        firstTime = false
     }
 
     fun reset() {
-        firstTime = true
+        t = null
     }
 }
