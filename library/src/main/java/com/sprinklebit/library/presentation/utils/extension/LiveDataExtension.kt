@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.sprinklebit.library.utils.OneTimeAction
-import com.sprinklebit.library.utils.Optional
 
 /**
  * Set value only if previous was null or not set
@@ -43,9 +42,7 @@ fun <T1, T2> observeForeverNullable(p1: LiveData<T1>,
         action.invoke(Pair(p1.value, p2.value))
     }
     p2.observeForever {
-        if (p1.value != null && p2.value != null) {
-            action.invoke(Pair(p1.value!!, p2.value!!))
-        }
+        action.invoke(Pair(p1.value!!, p2.value!!))
     }
 }
 
