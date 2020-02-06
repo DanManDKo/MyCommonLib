@@ -42,7 +42,7 @@ fun <T1, T2> observeForeverNullable(p1: LiveData<T1>,
         action.invoke(Pair(p1.value, p2.value))
     }
     p2.observeForever {
-        action.invoke(Pair(p1.value!!, p2.value!!))
+        action.invoke(Pair(p1.value, p2.value))
     }
 }
 
@@ -55,13 +55,13 @@ fun <T1, T2, T3> observeForeverNullable(p1: LiveData<T1>,
     }
 
     p1.observeForever {
-        action.invoke(Triple(p1.value!!, p2.value!!, p3.value!!))
+        action.invoke(Triple(p1.value, p2.value, p3.value))
     }
     p2.observeForever {
-        action.invoke(Triple(p1.value!!, p2.value!!, p3.value!!))
+        action.invoke(Triple(p1.value, p2.value, p3.value))
     }
     p3.observeForever {
-        action.invoke(Triple(p1.value!!, p2.value!!, p3.value!!))
+        action.invoke(Triple(p1.value, p2.value, p3.value))
     }
 }
 
