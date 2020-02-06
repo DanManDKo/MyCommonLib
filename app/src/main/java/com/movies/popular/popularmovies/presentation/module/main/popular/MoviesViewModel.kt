@@ -13,12 +13,6 @@ import com.sprinklebit.library.presentation.utils.extension.observeForever
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-/**
- * Created with Android Studio.
- * User: Danil Konovalenko
- * Date: 5/3/18
- * Time: 2:39 PM
- */
 class MoviesViewModel
 @Inject
 constructor(private val movieInteractor: MovieInteractor,

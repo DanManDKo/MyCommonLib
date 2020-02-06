@@ -15,10 +15,6 @@ import com.movies.popular.popularmovies.presentation.common.helper.UiHelper
 import com.sprinklebit.library.presentation.common.adapter.LoadingAdapter
 import javax.inject.Inject
 
-/**
- * User: Sasha Shcherbinin
- * Date : 5/4/18
- */
 class MoviesFragment : BaseFragment() {
 
     companion object {
@@ -54,7 +50,7 @@ class MoviesFragment : BaseFragment() {
         binding.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         binding.recyclerView.adapter = loadingAdapter
         binding.viewModel = viewModel
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         return binding.root
     }
 

@@ -10,13 +10,6 @@ import com.movies.popular.popularmovies.R
 import com.movies.popular.popularmovies.databinding.ItemMovieBinding
 import com.movies.popular.popularmovies.domain.model.Movie
 
-
-/**
- * Created with Android Studio.
- * User: Sasha Shcherbinin
- * Date: 9/15/17
- * Time: 7:17 PM
- */
 class MoviesAdapter(context: Context, private val viewModel: MoviesViewModel)
     : PagedListAdapter<Movie, MoviesAdapter.ItemViewHolder>(DIFF_CALLBACK) {
 
