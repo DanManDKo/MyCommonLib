@@ -5,7 +5,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import com.sprinklebit.library.TestConfig
 
-open class DebounceMutableLiveData<T>(millis: Long) : MutableLiveData<T>() {
+open class DebounceMutableLiveData<T>(millis: Long, val uniquely: Boolean = false) : MutableLiveData<T>() {
 
     private var newValue: T? = null
 
@@ -25,6 +25,7 @@ open class DebounceMutableLiveData<T>(millis: Long) : MutableLiveData<T>() {
 
     @MainThread
     override fun setValue(t: T?) {
+        if (uniquely && newValue == t) return
         newValue = t
         if (TestConfig.isTestEnvironment) {
             setSuperValue(newValue)
