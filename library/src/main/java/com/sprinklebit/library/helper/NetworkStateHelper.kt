@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import timber.log.Timber
 import java.util.concurrent.ConcurrentLinkedQueue
 
 object NetworkStateHelper {
@@ -26,11 +27,12 @@ object NetworkStateHelper {
     fun init(context: Context) {
         connectivityManager = context
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        isConnected = isNetworkConnected()
+        val state = isNetworkConnected()
+        Timber.d("init; isNetworkConnected = $state")
+        isConnected = state
         val networkRequest = NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
                 .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
                 .build()
         val connectivityManager = context
@@ -40,26 +42,33 @@ object NetworkStateHelper {
                 super.onAvailable(network)
                 isConnected = isNetworkConnected()
                 listeners.forEach { it.onChange(isConnected!!) }
+                Timber.d("onAvailable; isNetworkConnected = $isConnected")
             }
 
             override fun onUnavailable() {
                 super.onUnavailable()
-                isConnected = isNetworkConnected()
+                isConnected = false
                 listeners.forEach { it.onChange(isConnected!!) }
+                Timber.d("onUnavailable; isNetworkConnected = $isConnected")
             }
 
             override fun onLost(network: Network?) {
                 super.onLost(network)
-                isConnected = isNetworkConnected()
+                isConnected = isNetworkConnected(network)
                 listeners.forEach { it.onChange(isConnected!!) }
+                Timber.d("onLost; isNetworkConnected = $isConnected")
             }
-
         })
     }
 
-    private fun isNetworkConnected(): Boolean {
-        val netInfo = connectivityManager.activeNetworkInfo
-        return netInfo != null && netInfo.isConnected
+    private fun isNetworkConnected(network: Network? = null): Boolean {
+        return if (network == null) {
+            val netInfo = connectivityManager.activeNetworkInfo
+            netInfo != null && netInfo.isConnected
+        } else {
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+            networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+        }
     }
 
     interface ChangeListener {
